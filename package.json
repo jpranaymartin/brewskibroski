@@ -21,6 +21,8 @@
     "body-parser": "^1.14.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jsbeautifier": "^0.2.10",
     "mysql": "^2.10.0",
     "pg": "^4.4.3",
     "sequelize": "^3.17.1"
