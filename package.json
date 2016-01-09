@@ -1,0 +1,19 @@
+{
+  "name": "brewskibroski",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/asyncbb/brewskibroski.git"
+  },
+  "author": "asyncbb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asyncbb/brewskibroski/issues"
+  },
+  "homepage": "https://github.com/asyncbb/brewskibroski#readme"
+}
