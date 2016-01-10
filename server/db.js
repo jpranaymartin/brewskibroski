@@ -5,6 +5,9 @@ var User = sequelize.define('User', {
   username: {type: Sequelize.STRING, allowNull: false},
   password: {type: Sequelize.STRING, allowNull: false},
   email: {type: Sequelize.STRING, allowNull: false}
+},
+{
+  timestamps:true
 });
 
 var Event = sequelize.define('Event', {
@@ -20,19 +23,20 @@ var Event = sequelize.define('Event', {
 },
 {
   timestamps: true,
-  createdAt: true,
   paranoid: true
 });
 
 var Friend = sequelize.define('Friend', {
   friendId: {type: Sequelize.INTEGER, allowNull: false},
+},
+{
+  timestamps:true
 });
 
 var Bro = sequelize.define('Bro', {
 },
 {
   timestamps: true,
-  createdAt: true,
   paranoid: true
 });
 
@@ -53,3 +57,6 @@ exports.User = User;
 exports.Event = Event;
 exports.Friend = Friend;
 exports.Bro = Bro;
+
+
+

@@ -26,6 +26,9 @@ app.set("port", 8000);
 // Logging and parsing
 app.use(parser.json());
 
+// Serving static files from client directory.
+app.use(express.static(__dirname + '/client/'));
+
 // Set up our routes
 app.use("/", router);
 
