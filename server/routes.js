@@ -6,14 +6,7 @@ var db = require('./db');
 var util = require('./utilities');
 var request = require('request');
 var sequelize = require('sequelize');
-
-// db.User.findOrCreate({
-//   where: {
-//     username: 'daniel1',
-//     password: 'test',
-//     email: 'email'
-//   }
-// })
+var seq = new sequelize('brewskitest1', 'root', '');
 
 //Open App
 router.get('/', util.checkUser, function (request, response) {
@@ -92,9 +85,7 @@ router.get('/login', function (request, response) {
   response.sendFile(dirname + '/client/auth.html')
 })
 
-
-//**TEST ROUTES**
-//TEST JSON RETURN
+//Populate Event List
 router.get('/populateapp', function (request, response) { //NOT FULLY IMPLEMENTED. NOT SURE IF TWO CALLS ARE THE WAY TO GO
   var username = request.body.username;
   db.User.find({
@@ -187,9 +178,6 @@ router.post('/eventaccept', function (request, response) {
   });
 });
 
-
-//ADD ROUTE ADDFRIEND, ADD ROUTE CHECKFRIENDS
-
 router.post('/addfriend', function (request, response) {
   console.log("request.body: ", request.body)
   var friend = request.body.friend;
@@ -200,44 +188,45 @@ router.post('/addfriend', function (request, response) {
       username: friend
     }
   }).then(function (foundFriend) {
-    console.log("foundFriend.id: ", foundFriend.id)
-    db.Friend.findOrCreate({
-      where : {
-        friendId: foundFriend.id,
-        UserId: request.session.user
-      }
-    }).spread(function(result){
-      if(result.$options.isNewRecord === true){
-        console.log('Success!')
-        response.status(201)
-        response.end()
-      }else{
-        console.log("Friendship already created")
-        response.status(404)
-        response.end()
-      }
-    })
+    console.log("foundFriend: ", foundFriend)
+    if (foundFriend) {
+      db.Friend.findOrCreate({
+        where : {
+          friendId: foundFriend.id,
+          UserId: request.session.user
+        }
+      }).spread(function(result){
+        if(result.$options.isNewRecord === true){
+          console.log('Success!')
+          response.status(201)
+          response.end()
+        }else{
+          console.log("Friendship already created")
+          response.status(404)
+          response.end()
+        }
+      })
+    }else{
+      console.log("That friend doesn't exist, bromancer")
+      response.status(404)
+      response.end()
+    };;
   })
 })
 
-//Returns the events requested   // TO FINISH
-// router.post('/eventsreturn', function (request, response) {
-//   var id = request.body.id;
-//   db.Event.findAll({
-//     where: {
-//       id: id, // THIS SHOULD BE UserID AND WILL RETURN ALL THE ACTIVE EVENTS IN THE DB
-//       $and: {active: true}
-//     }
-//   }).then(function (results) {
-//     response.json({results})
-//     response.end()
-//   });
-// });
+router.get('/friendlist', function (request, response) {
+  seq.query('SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)',
+  {
+    replacements: [request.session.user],
+    type: sequelize.QueryTypes.SELECT
+  })
+  .then(function(rows){
+            response.json({rows})
+            response.end()
+        });
+})
 
 module.exports = router;
-
-
-
 
 
 
