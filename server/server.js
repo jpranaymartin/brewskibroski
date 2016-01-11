@@ -4,6 +4,7 @@ var express = require('express');
 //Middleware
 var parser = require('body-parser');
 var router = require('./routes.js');
+var session = require('express-session');
 
 // db connection
 var connection = mysql.createConnection({
@@ -28,6 +29,12 @@ app.use(parser.json());
 
 // Serving static files from client directory.
 app.use(express.static(__dirname + '/client/'));
+
+app.use(session({
+  secret: 'dgdjkgd34',
+  resave: true,
+  saveUninitialized: true
+}));
 
 // Set up our routes
 app.use("/", router);
