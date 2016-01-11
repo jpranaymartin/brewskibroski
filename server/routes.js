@@ -22,7 +22,6 @@ router.get('/', util.checkUser, function (request, response) {
 
 // User signup
 router.post('/authsignup', function (request, response){
-  console.log("request post: ", request.body)
   var username = request.body.username;
   var password = request.body.password;
   var email = request.body.email;
@@ -36,8 +35,7 @@ router.post('/authsignup', function (request, response){
     }).spread(function(result, created){
       if(created === true){
         console.log('Success!')
-        util.createSession(request, response, username);
-        response.status(201).redirect('/app')
+        util.createSession(request, response, result.dataValues.id);
       }else{
         var dirname = __dirname;
         dirname = dirname.slice(0, -6);
@@ -65,7 +63,7 @@ router.post('/authlogin', function (request, response) {
   }).then(function(result){
     if(result){
       console.log('User result.id being passed into session: ' + username);
-      util.createSession(request, response, username);
+      util.createSession(request, response, result.id);
       // response.redirect(302, '/app');
     } else {
       response.sendStatus(401); //Handled on the front end
@@ -190,7 +188,37 @@ router.post('/eventaccept', function (request, response) {
 });
 
 
-//ADD ROUTE ADDFRIENDS, ADD ROUTE CHECKFRIENDS
+//ADD ROUTE ADDFRIEND, ADD ROUTE CHECKFRIENDS
+
+router.post('/addfriend', function (request, response) {
+  console.log("request.body: ", request.body)
+  var friend = request.body.friend;
+  console.log("friend: ", friend)
+  console.log("request.session.user: ", request.session.user)
+  db.User.find({
+    where: {
+      username: friend
+    }
+  }).then(function (foundFriend) {
+    console.log("foundFriend.id: ", foundFriend.id)
+    db.Friend.findOrCreate({
+      where : {
+        friendId: foundFriend.id,
+        UserId: request.session.user
+      }
+    }).spread(function(result){
+      if(result.$options.isNewRecord === true){
+        console.log('Success!')
+        response.status(201)
+        response.end()
+      }else{
+        console.log("Friendship already created")
+        response.status(404)
+        response.end()
+      }
+    })
+  })
+})
 
 //Returns the events requested   // TO FINISH
 // router.post('/eventsreturn', function (request, response) {
