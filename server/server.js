@@ -1,10 +1,10 @@
 var mysql = require('mysql');
 var express = require('express');
+var session = require('express-session');
 
 //Middleware
 var parser = require('body-parser');
 var router = require('./routes.js');
-var session = require('express-session');
 
 // db connection
 var connection = mysql.createConnection({
@@ -21,6 +21,14 @@ var db = connection;
 var app = express();
 module.exports.app = app;
 
+// Establish session
+app.use(session({
+ secret: 'dgdjkgd34',
+ resave: true,
+ saveUninitialized: false,
+ cookie: {maxAge: 60000}
+}));
+
 // Set what we are listening on.
 app.set("port", 8000);
 
@@ -30,11 +38,6 @@ app.use(parser.json());
 // Serving static files from client directory.
 app.use(express.static(__dirname + '/client/'));
 
-app.use(session({
-  secret: 'dgdjkgd34',
-  resave: true,
-  saveUninitialized: true
-}));
 
 // Set up our routes
 app.use("/", router);

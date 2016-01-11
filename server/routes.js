@@ -5,16 +5,15 @@ var bcrypt = require('bcrypt-nodejs');
 var db = require('./db');
 var util = require('./utilities');
 var request = require('request');
-var session = require('express-session');
 var sequelize = require('sequelize');
 
-db.User.findOrCreate({
-  where: {
-    username: 'daniel1',
-    password: 'test',
-    email: 'email'
-  }
-})
+// db.User.findOrCreate({
+//   where: {
+//     username: 'daniel1',
+//     password: 'test',
+//     email: 'email'
+//   }
+// })
 
 //Open App
 router.get('/', util.checkUser, function (request, response) {
@@ -55,6 +54,9 @@ router.post('/authlogin', function (request, response) {
   var username = request.body.username;
   var password = request.body.password;
 
+  console.log('Attempted login username: ' + request.body.username);
+  console.log('Attempted login password: ' + request.body.password);
+
   db.User.find({
     where: {
       username: username,
@@ -62,8 +64,9 @@ router.post('/authlogin', function (request, response) {
     }
   }).then(function(result){
     if(result){
-      util.createSession(request, response, result.id);
-      response.redirect(302, '/app');
+      console.log('User result.id being passed into session: ' + username);
+      util.createSession(request, response, username);
+      // response.redirect(302, '/app');
     } else {
       response.sendStatus(401); //Handled on the front end
     }

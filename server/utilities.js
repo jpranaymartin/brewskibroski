@@ -1,8 +1,11 @@
 var session = require('express-session');
 
 exports.createSession = function(request, response, newUser) {
+  console.log('Current request session before created: ' + request.session);
   return request.session.regenerate(function(){
     request.session.user = newUser;
+    response.redirect('/app');
+    console.log("Request session user saved as: " + request.session.user);
   })
 }
 
@@ -15,10 +18,13 @@ var isLoggedOut = function (request) {
 }
 
 exports.checkUser = function (request, response, next) {
-  console.log("request.session: ", JSON.stringify(request.session, null, "\t"));
+  console.log("Request session: ", JSON.stringify(request.session, null, "\t"));
+  console.log("Request session user in user check: " + request.session.user);
   if(isLoggedOut(request)){
+    console.log('Not logged in, redirecting to auth');
     response.redirect('/login')
   } else {
+    console.log('Logged in, redirecting to next');
     next();
   }
 }
