@@ -6,17 +6,6 @@ var session = require('express-session');
 var parser = require('body-parser');
 var router = require('./routes.js');
 
-// db connection
-var connection = mysql.createConnection({
-    user: "root",
-    password: "",
-    database: "chat"
-});
-
-connection.connect();
-
-var db = connection;
-
 // Router
 var app = express();
 module.exports.app = app;
