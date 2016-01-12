@@ -13,6 +13,7 @@ var User = sequelize.define('User', {
 var Event = sequelize.define('Event', {
   acceptedAt: Sequelize.STRING,
   acceptedId: Sequelize.INTEGER,
+  // eventType: Sequelize.INTEGER,  //NEED TO UNCOMMENT TO ADD BROSKIS
   active: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   accepted: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   ownerLat: {type: Sequelize.FLOAT(53), allowNull: true, validate: {min: -90.0, max: 90.0}, defaultValue: null},

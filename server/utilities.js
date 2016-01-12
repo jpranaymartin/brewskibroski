@@ -1,7 +1,7 @@
 var session = require('express-session');
 
 exports.createSession = function(request, response, newUser) {
-  console.log('Current request session before created: ' + request.session);
+  console.log('Current request session before created: ' + request.session.id);
   return request.session.regenerate(function(){
     request.session.user = newUser;
     response.redirect('/app');
