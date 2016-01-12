@@ -27,7 +27,7 @@ router.post('/authsignup', function (request, response){
       }
     }).spread(function(result, created){
       if(created === true){
-        console.log('Success!')
+        console.log('You\'re now a Bro, bro!')
         util.createSession(request, response, result.dataValues.id);
       }else{
         var dirname = __dirname;
@@ -57,9 +57,8 @@ router.post('/authlogin', function (request, response) {
     if(result){
       console.log('User result.id being passed into session: ' + username);
       util.createSession(request, response, result.id);
-      // response.redirect(302, '/app');
     } else {
-      response.sendStatus(401); //Handled on the front end
+      response.sendStatus(401);
     }
   })
 })
@@ -68,12 +67,14 @@ router.post('/authlogin', function (request, response) {
 router.get('/app', util.checkUser, function (request, response) {
   var dirname = __dirname
   dirname = dirname.slice(0,-6)
+  console.log("You're in, Broce Lee!")
   response.sendFile(dirname + '/client/app.html');
 })
 
 // User logout
 router.get('/logout', function (request, response) {
   request.session.destroy(function(){
+    console.log("You\'re out, Bromeslice")
     response.redirect('/login');
   })
 })
@@ -86,24 +87,44 @@ router.get('/login', function (request, response) {
 })
 
 //Populate Event List
-router.get('/populateapp', function (request, response) { //NOT FULLY IMPLEMENTED. NOT SURE IF TWO CALLS ARE THE WAY TO GO
-  var username = request.body.username;
-  db.User.find({
-    where: {
-      id: '1' //or username: 'daniel1'
-    }
+router.get('/eventslist', function (request, response) { //NOT FULLY IMPLEMENTED. NOT SURE IF TWO CALLS ARE THE WAY TO GO
+  //TO EDIT ... COPIED FROM friendslist
+  seq.query('SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)',
+  {
+    replacements: [request.session.user],
+    type: sequelize.QueryTypes.SELECT
   })
-  .then(function (result) {
-    response.json({result})
-  })
+  .then(function(friendList){
+    console.log("friendList: ", friendList)
+    var friendIds = friendList.map(function (usersFriends) {
+
+      console.log("usersFriends: ", usersFriends.id)
+      return {UserId: {$eq: usersFriends.id}};
+    });
+    db.Event.findAll({
+      where: {
+        $or: friendIds
+      }
+    }).then(function (item) {
+      var results = item.map(function (item, index) {
+        console.log("item: ", item)
+        console.log("friendList[index].id: ", friendList[index].username)
+        item.dataValues.username = friendList[index].username;
+        return item
+      })
+      response.json({results})
+      response.end()
+    })
+  });
 })
 
 //Creating new event
-router.post('/events', function (request, response) {
-  var UserId = request.session.user;  //TO TEST WITH AUTH
+router.post('/createevent', function (request, response) {
+  var UserId = request.session.user;
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
   var active = request.body.active;
+  // var eventType = request.body.eventType; //NEED TO UNCOMMENT TO ADD BROSKIS
 
   if (UserId !== null || ownerLat !== null || ownerLong !== null || active !== null) {
     db.Event.findOrCreate({
@@ -115,18 +136,18 @@ router.post('/events', function (request, response) {
       }
     }).spread(function(result){
       if(result.$options.isNewRecord === true){
-        console.log('Success!')
+        console.log('time to turn up, Bro-ntosaurus!')
         response.status(201)
         response.end()
       }else{
-        console.log("Event already created")
+        console.log("Event already created, Broham")
         response.status(404)
         response.end()
       }
     })
 
   }else{
-    console.log("Some or all incoming data is null")
+    console.log("Bro, some or all your incoming data is null, bro")
     response.status(404)
     response.end()
   };
@@ -168,6 +189,7 @@ router.post('/eventaccept', function (request, response) {
 
       console.log("acceptedEvent: ", JSON.stringify(acceptedEvent, null, "\t"));
       acceptedEvent.save()
+      console.log("Sweet! We updated that event, Angelina Brolie.")
       response.json(acceptedEvent)
       response.end()
     }else{
@@ -197,11 +219,11 @@ router.post('/addfriend', function (request, response) {
         }
       }).spread(function(result){
         if(result.$options.isNewRecord === true){
-          console.log('Success!')
+          console.log('You two are bros now!')
           response.status(201)
           response.end()
         }else{
-          console.log("Friendship already created")
+          console.log("bromance already created")
           response.status(404)
           response.end()
         }
@@ -214,16 +236,16 @@ router.post('/addfriend', function (request, response) {
   })
 })
 
-router.get('/friendlist', function (request, response) {
+router.get('/friendslist', function (request, response) {
   seq.query('SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)',
   {
     replacements: [request.session.user],
     type: sequelize.QueryTypes.SELECT
   })
-  .then(function(rows){
-            response.json({rows})
-            response.end()
-        });
+  .then(function(friends){
+      response.json({friends})
+      response.end()
+  });
 })
 
 module.exports = router;
