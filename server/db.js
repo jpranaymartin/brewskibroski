@@ -14,6 +14,8 @@ var Event = sequelize.define('Event', {
   acceptedAt: Sequelize.STRING,
   acceptedId: Sequelize.INTEGER,
   eventType: Sequelize.INTEGER,
+  ownerName: {type: Sequelize.STRING, allowNull: true},
+  acceptedName: {type: Sequelize.STRING, allowNull: true},
   active: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   accepted: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   ownerLat: {type: Sequelize.FLOAT(53), allowNull: true, validate: {min: -90.0, max: 90.0}, defaultValue: null},

@@ -126,22 +126,32 @@ router.post('/createevent', function (request, response) {
   var UserId = request.session.user;
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
-  var active = request.body.active;
+  var active = true;
   // var eventType = request.body.eventType; //NEED TO UNCOMMENT TO ADD BROSKIS
 
   if (UserId !== null || ownerLat !== null || ownerLong !== null || active !== null) {
     db.Event.findOrCreate({
       where: {
-        UserId: UserId, //Not being set for some reason.
+        UserId: UserId,
         ownerLat: ownerLat,
         ownerLong: ownerLong,
         active: active
       }
     }).spread(function(result){
       if(result.$options.isNewRecord === true){
-        console.log('time to turn up, Bro-ntosaurus!')
-        response.status(201)
-        response.end()
+        console.log("here")
+        db.User.find(
+          {
+            where: {
+              id: request.session.user
+            }
+          }).then(function (owner) {
+            result.ownerName = owner.username;
+            result.save()
+            console.log('time to turn up, Bro-ntosaurus!')
+            response.status(201)
+            response.end()
+          })
       }else{
         console.log("Event already created, Broham")
         response.status(404)
@@ -169,32 +179,43 @@ router.post('/eventaccept', function (request, response) {
   .then(function(acceptedEvent) {
 
     if (acceptedEvent.active === true) {
-      var lat1 = acceptedEvent.ownerLat;
-      var lon1 = acceptedEvent.ownerLong;
-      var lat2 = acceptedLat;
-      var lon2 = acceptedLong;
 
-      //DEFINE CENTRAL LAT/LONG
-      var ownerPoints = [lat1,lon1]
-      var acceptedPoints = [lat2,lon2]
-      var centralLatLong;
-      centralLatLong = util.getCentralPoints(ownerPoints, acceptedPoints, 1)
+      db.User.find({
+        where:{
+          id: request.session.user
+        }
+      })
+      .then(function (acceptor) {
+        console.log("acceptor: ", acceptor)
+        var lat1 = acceptedEvent.ownerLat;
+        var lon1 = acceptedEvent.ownerLong;
+        var lat2 = acceptedLat;
+        var lon2 = acceptedLong;
 
-      console.log("acceptedEvent: ", JSON.stringify(acceptedEvent, null, "\t"));
-      acceptedEvent.acceptedId = request.session.user; // TO TEST
-      acceptedEvent.acceptedLat = acceptedLat;
-      acceptedEvent.acceptedLong = acceptedLong;
-      acceptedEvent.acceptedAt = acceptedAt;
-      acceptedEvent.centerLat = centralLatLong[0].x;
-      acceptedEvent.centerLong = centralLatLong[0].y;
-      acceptedEvent.accepted = true;
-      acceptedEvent.active = false;
+        //DEFINE CENTRAL LAT/LONG
+        var ownerPoints = [lat1,lon1]
+        var acceptedPoints = [lat2,lon2]
+        var centralLatLong;
+        centralLatLong = util.getCentralPoints(ownerPoints, acceptedPoints, 1)
 
-      console.log("acceptedEvent: ", JSON.stringify(acceptedEvent, null, "\t"));
-      acceptedEvent.save()
-      console.log("Sweet! We updated that event, Angelina Brolie.")
-      response.json(acceptedEvent)
-      response.end()
+        console.log("acceptedEvent: ", JSON.stringify(acceptedEvent, null, "\t"));
+        acceptedEvent.acceptedName = acceptor.username;
+        acceptedEvent.acceptedId = request.session.user; // TO TEST
+        acceptedEvent.acceptedLat = acceptedLat;
+        acceptedEvent.acceptedLong = acceptedLong;
+        acceptedEvent.acceptedAt = acceptedAt;
+        acceptedEvent.centerLat = centralLatLong[0].x;
+        acceptedEvent.centerLong = centralLatLong[0].y;
+        acceptedEvent.accepted = true;
+        acceptedEvent.active = false;
+
+        console.log("acceptedEvent: ", JSON.stringify(acceptedEvent, null, "\t"));
+        acceptedEvent.save()
+        console.log("Sweet! We updated that event, Angelina Brolie.")
+        response.json(acceptedEvent)
+        response.end()
+      })
+
     }else{
       console.log("That event already expired, Brosephalus.")
       response.status(406)
