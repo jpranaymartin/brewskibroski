@@ -106,14 +106,17 @@ router.get('/eventslist', function (request, response) { //NOT FULLY IMPLEMENTED
         $or: friendIds
       }
     }).then(function (item) {
-      var results = item.map(function (item, index) {
-        console.log("item: ", item)
-        console.log("friendList[index].id: ", friendList[index].username)
-        item.dataValues.username = friendList[index].username;
-        return item
-      })
-      response.json({results})
-      response.end()
+      if (item) {
+        var results = item.map(function (item, index) {
+          item.dataValues.username = friendList[index].username;
+          return item
+        })
+        response.json({results})
+        response.end()
+      }else{
+        console.log("what?")
+        response.send(404)
+      };;
     })
   });
 })
@@ -219,9 +222,22 @@ router.post('/addfriend', function (request, response) {
         }
       }).spread(function(result){
         if(result.$options.isNewRecord === true){
-          console.log('You two are bros now!')
-          response.status(201)
-          response.end()
+          db.Friend.findOrCreate({
+            where : {
+              friendId: request.session.user,
+              UserId: foundFriend.id
+            }
+          }).spread(function(result){
+            if(result.$options.isNewRecord === true){
+              console.log('You two are bros now!')
+              response.status(201)
+              response.end()
+            }else{
+              console.log("bromance already created")
+              response.status(404)
+              response.end()
+            }
+          })
         }else{
           console.log("bromance already created")
           response.status(404)

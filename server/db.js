@@ -13,7 +13,7 @@ var User = sequelize.define('User', {
 var Event = sequelize.define('Event', {
   acceptedAt: Sequelize.STRING,
   acceptedId: Sequelize.INTEGER,
-  // eventType: Sequelize.INTEGER,  //NEED TO UNCOMMENT TO ADD BROSKIS
+  eventType: Sequelize.INTEGER,
   active: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   accepted: {type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false},
   ownerLat: {type: Sequelize.FLOAT(53), allowNull: true, validate: {min: -90.0, max: 90.0}, defaultValue: null},
@@ -35,30 +35,19 @@ var Friend = sequelize.define('Friend', {
   timestamps:true
 });
 
-var Bro = sequelize.define('Bro', {
-},
-{
-  timestamps: true,
-  paranoid: true
-});
-
 Friend.belongsTo(User);
 Event.belongsTo(User);
-Bro.belongsTo(User);
 
 User.hasMany(Friend);
 User.hasMany(Event);
-User.hasMany(Bro);
 
 User.sync();
 Event.sync();
 Friend.sync();
-Bro.sync();
 
 exports.User = User;
 exports.Event = Event;
 exports.Friend = Friend;
-exports.Bro = Bro;
 
 
 
