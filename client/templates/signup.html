@@ -1,0 +1,19 @@
+<div>
+	<p>SignUp HTML </p>
+	<form name = "signupForm" ng-submit = "signup()" novalidate>
+		<input type = "text" name="newusernamename" placeholder = "username" ng-model = "userS" required>
+		<div ng-messages = "signupForm.newusernamename.$error" ng-if="signupForm.newusernamename.$dirty">
+			<div ng-message="required">Username is required</div>
+		</div>
+		<input type = "text" name="passwordname" placeholder = "password" ng-model = "passS" required>
+		<div ng-messages = "signupForm.passwordname.$error" ng-if="signupForm.passwordname.$dirty">
+			<div ng-message="required">Password is required</div>
+		</div>
+		<input type = "email" name="emailname" placeholder = "email" ng-model = "email" required>
+		<div ng-messages = "signupForm.emailname.$error" ng-if="signupForm.emailname.$dirty">
+			<div ng-message="required">Email is required</div>
+		</div>
+		<button type = "submit" ng-disabled = "signupForm.$invalid">Login</button>
+	</form>
+	<p><a ui-sref="login">Login</a></p>
+</div>
