@@ -1,0 +1,15 @@
+<div>
+	<p>Login HTML </p>
+	<form name = "loginForm" ng-submit = "login()" novalidate>
+		<input type = "text" name="usernamename"placeholder = "username" ng-model = "user" required>
+		<div ng-messages = "loginForm.usernamename.$error" ng-if = "loginForm.usernamename.$dirty">
+			<div ng-message="required">Username is required</div>
+		</div>
+		<input type = "text" name="passwordname"placeholder = "password" ng-model = "pass" required>
+		<div ng-messages = "loginForm.passwordname.$error" ng-if = "loginForm.passwordname.$dirty">
+			<div ng-message="required">Password is required</div>
+		</div>
+		<button type = "submit" ng-disabled="loginForm.$invalid">Login</button>
+	</form>
+	<p><a ui-sref="signup">Signup</a></p>
+</div>
