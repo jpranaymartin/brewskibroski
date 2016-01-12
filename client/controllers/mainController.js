@@ -12,7 +12,7 @@ angular.module('App.main',[])
 					eventType: 2
 				}
 			}).then(function(success){
-				css
+				console.log(success);
 			}, function(err){
 				console.log(err);
 			})
@@ -64,7 +64,9 @@ angular.module('App.main',[])
 				method: 'GET',
 				url: '/eventslist'
 			})
-			.then(function(result))
+			.then(function(result){
+				console.log("inside scope.check");
+			})
 		}
 
 
