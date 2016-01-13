@@ -12,6 +12,7 @@ angular.module('Auth')
 			})
 			.then(function(success){
 				console.log(success);
+				window.location.replace('/app');
 			}, function(err){
 				console.log(err);
 			})
