@@ -1,20 +1,24 @@
 <div>
 	<h1>Settings HTML</h1>
+
 	<div>
 		<button ui-sref="main">Home</button>
 	</div>
+
 	<div>
 		<form>
-			<input placeholder = "Search for Friends">
+			<input placeholder = "Search for Friends" ng-model="potentialFriend" required>
 		</form>
-		<button>Add Friend</button>
+		<button ng-click="addFriend()">Add Friend</button>
 	</div>
+
 	<div>
-		<button>Logout</button>
+		<button ng-click="logout()">Logout</button>
 	</div>
 
 	<div>
 		<ul>
+      <li ng-repeat="friend in friends">{{friend.username}}</li>
 		</ul>
 	</div>
 

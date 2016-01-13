@@ -369,17 +369,31 @@ router.post('/events', function(request, response) {
     response.status(404)
     response.end()
   }
-})
+});
+
+router.get('/user', function (request, response) {
+  db.User.find({
+    where: {
+      id: request.session.user
+    }
+  }).then(function(result){
+    console.log("/user db search result:", result);
+    var user = {
+      id: result.id,
+      username: result.username
+    }
+    response.send(user);
+  });
+});
 
 // Search Yelp
-  router.post('/yelp', function (request, response) {
-    var centerLat = request.body.centerLat;
-    var centerLong = request.body.centerLong;
-    console.log("Center lat from form: ", centerLat);
-    console.log("Center long from form: ",centerLong);
+router.post('/yelp', function (request, response) {
+  var centerLat = request.body.centerLat;
+  var centerLong = request.body.centerLong;
+  console.log("Center lat from form: ", centerLat);
+  console.log("Center long from form: ",centerLong);
 
-    util.searchYelpApi(request, response, centerLat, centerLong);
-
-  })
+  util.searchYelpApi(request, response, centerLat, centerLong);
+});
 
 module.exports = router;
