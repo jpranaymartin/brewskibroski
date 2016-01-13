@@ -1,88 +1,134 @@
 angular.module('App.main',[])
-	.controller('MainController', function($http, $scope, $q, $window, $location, $rootScope){
+	.controller('MainController', function($http, $scope, $q, $window, $location, $rootScope, AppFactory){
 
+
+
+		$scope.showEvent = AppFactory.userEvent ? AppFactory.userEvent.accepted : false;
+		//getUsername						WORKS
+		//checkEvents           WORKS
+		//showing events 				WORKS
+		//alreadyEvent()				WORKS
+		//acceptbrewski()				WORKS
+		console.log(AppFactory.userEvent);
+
+		$scope.pending = false;
+
+		$scope.init = function(){
+			$scope.setDisable();  // Get correct value for whether brewski button works
+			$scope.getLocation();   // Ask user for permission to use location for best UI experience
+			$scope.checkEvents();
+			$scope.getUsername();  // fetch events for timeline
+			console.log("AppFactory.userEvent", AppFactory.userEvent);
+		}
+
+		//WORKS
+		$scope.getUsername = function(){
+			$http({
+				method: 'GET',
+				url: '/user'
+			}).then(function(success){
+				AppFactory.userId = success.data.id;
+			}, function(err){
+				console.log(err, "ERROR: COULD NOT GET USERNAME! INSIDE getUsername");
+			})
+		}
 
 		$scope.isDisabled = false; //NEEDS TO BE ROOT SCOPE EVENTUALLY OR FACTORY
 
-		$scope.toggleDisable = function(){
-			$scope.isDisabled = !$scope.isDisabled;
+		$scope.events = []; //LIST OF EVENTS (SHOULD BE UPDATED CONSTANTLY WITH $INTERVAL)
+
+		$scope.checkEvents = function(){
+			// console.log("checkingEvents() 1st line");
+			return $http({
+				method: 'GET',
+				url: '/events'
+				// , data: {order: "-createdAt"}
+			})
+			.then(function(success){
+				$scope.events = success.data.results;
+				console.log("after GET req to /events, success.data.results:", success.data.results);
+			}, function(err){
+				console.log(err);
+			});
+		}
+
+		$scope.setDisable = function(){
+			if(AppFactory.userEvent && AppFactory.userEvent.accepted === false){
+				$scope.isDisabled = true;
+				$scope.pending = true;
+				console.log("inside set Disable");
+			} else {
+				$scope.isDisabled= false;
+			}
+			// $scope.isDisabled = !$scope.isDisabled;
+			// if(!$rootScope.userEvent){
+			// 	$scope.isDisabled = false;
+			// }
+			// else if($rootScope.userEvent && $rootScope.userEvent.status === inactive){
+			// 	$scope.isDisabled = true;
+			// } else if ($rootScope.userEvent && $rootScope.userEvent.status === active){
+			// 	$scope.isDisabled = false;
+			// }
 		};
 
 		$scope.brew = function() {
-      if (!$rootScope.userAcceptedOrCreatedEvent) { //if no brewski event hosted
-        $scope.getLocation().then(function(result){
-          console.log("result of invite()", result, result.coords.latitude);
-          // $scope.toggleDisable();
-          $http({
-            method: 'POST',
-            url: '/events',
-            data: {
-              ownerLat: result.coords.latitude,
-              ownerLong: result.coords.longitude,
-              eventType: 1
-            }
-          }).then(function(success){
-            $rootScope.userAcceptedOrCreatedEvent = success;
-            $rootscope.user
-            console.log("Success: owner lat/long sent");
-          }, function(err){
-            console.log("Failure: owner lat/long not sent");
-            // $scope.toggleDisable();
-  				});
-  			});
-      } else {
-      //if brewski event exists
+		  // if (AppFactory.userEvent !== 0) { //if no brewski event hosted/accepted
+		    $scope.isDisabled = true;
+		    $scope.getLocation().then(function(result) {
+		      console.log("result of invite()", result, result.coords.latitude);
+		      $http({
+		        method: 'POST',
+		        url: '/events',
+		        data: {
+		          ownerLat: result.coords.latitude,
+		          ownerLong: result.coords.longitude
+		          //, eventType: 1
+		        }
+		      }).then(function(success) {
+		        AppFactory.userEvent = success.data;
+		        console.log("Success: owner lat/long sent");
+		      }, function(err) {
+		        console.log("Failure: owner lat/long not sent");
+		      }).finally(function() {
+		        $scope.setDisable();
+		      });
+		    });
+		    // if userEvent exists and that event is accepted
+			// } else {
+			// 	$scope.setDisable();
+			// 	console.log("setDisable inside", $scope.isDisable);
+			// }
+		}
 
-        //search through $rootScope.events array for event object with id of $rootScope
-
-        //POSSIBLE ISSUES:
-        // - upon event refresh from $interval, update a flag ($rootScope.eventAccepted???) with boolean
-        // - based on flag, disable/enable brewski button
-        // - PROBLEM: what if you host a brewski event, and before anyone accepts your invite, you accept another brewski invite?
-
-
-
-      }
-      //if user does not own an event and if they haven't accepted an event
-      // $scope.toggleDisable();
-
-
-			//if user owns an event or if they have accepted event the button now takes them to their event
-
-			// $http({
-			// 	method: 'GET',
-			// 	url: '/events/' + $rootscope.userEventId
-			// }).then(function(success){
-			// 	console.log(success, "Inside GET for BREW() aka GO TO EVENT");
-			// }, function(err){
-			// 	console.log(err, "GET for BREW() aka GO TO EVENT errored");
-			// })
-
-
-
+		$scope.goToEvent = function() {
+			$http({
+		      method: 'GET',
+		      url: '/events/' + AppFactory.userEvent.id
+		    })
+			.then(function(success) {
+		      $location.path("/event");
+		    }, function(err) {
+		      console.log(err, "brew() ERROR: $rootScope.userEvent was accepted but something broke");
+		    });
 		};
 
-
-
-
-		$rootScope.userEventId = null;
-
-
-
+		//IF YOU CREATE A BREWSKI YOU HAVE ALREADY CREATED A
 		$scope.alreadyEvent = function(){
-			if($rootScope.userEventId){return ", but you already have an event!";}else{return " ";}};
-
-
-
-
+			if(AppFactory.userEvent){
+				return ", but you already have an event bro!";
+			}else{
+				return " ";}
+			};
 
 		$scope.acceptBrewski = function(event){
+
+			console.log("acceptBrewski() beginning");
 
 			$scope.getLocation().then(function(success){
 
 			$http({
 				method: 'POST',
-				url: '/eventaccept',
+				url: '/events/' + event.id,
 				data: {
 					id: event.id,
 					acceptedLat: success.coords.latitude,
@@ -95,12 +141,12 @@ angular.module('App.main',[])
 						method: 'GET',
 						url: '/events/' + event.id,
 					}).then(function(success){
+						AppFactory.userEvent = success.data.results[0];
+						console.log("inside acceptbrewski(). AppFactory.userEvent = ", success.data.results[0]);
 						$location.path("/event");
 					}, function(err){
 						console.log("GET REQUEST FAILED FOR EVENTS PAGE AFTER PRESSING ACCEPT BREWSKI");
 					});
-
-
 				}, function(err){
 					console.log("INSIDE BAD POST", err);
 				});
@@ -110,22 +156,21 @@ angular.module('App.main',[])
 
 		};
 
+		// $scope.bro = function(){
 
-		$scope.bro = function(){
+		// 	return $http({
+		// 		method: 'POST',
+		// 		url: '/events',
+		// 		data: {
+		// 			eventType: 2
+		// 		}
+		// 	}).then(function(success){
+		// 		console.log(success);
+		// 	}, function(err){
+		// 		console.log(err);
+		// 	})
 
-			return $http({
-				method: 'POST',
-				url: '/events',
-				data: {
-					eventType: 2
-				}
-			}).then(function(success){
-				console.log(success);
-			}, function(err){
-				console.log(err);
-			})
-
-		};
+		// };
 
 		$scope.getLocation = function(){
 			var deferred = $q.defer();
@@ -139,81 +184,14 @@ angular.module('App.main',[])
 					deferred.reject(err);
 				});
 			}
-			console.log("deferred.promise", deferred.promise);
+			// console.log("deferred.promise", deferred.promise);
 			return deferred.promise;
 		};
 
 
-		$scope.addEventsToTimeline = function(data){
-			//
-		}
 
+		$scope.init();
 
-
-  // 		console.log($scope.timelineArray);
-
-		// //
-		// $scope.events;
-
-
-		// $scope.init = function(){
-		// 	$scope.getLocation();
-		// 	$interval($scope.check, 5000);
-		// }
-
-		// $scope.init();
-
-		//GOES INTO APP FACTORY!!!!!!!!!
-		$rootScope.friends = [
-			{id: 1, username: "dustin"},
-			{id: 2, username: "test"}
-		];
-		//GOES INTO APP FACTORY!!!!!!!!!
-		$rootScope.events = []; //LIST OF EVENTS (SHOULD BE UPDATED CONSTANTLY WITH $INTERVAL)
-
-		// {
-		// 	friends: [
-		// 		{id: 1, username: "ariel"},
-		// 		{id: 2, username: "jeff"}
-		// 	]
-		// }
-
-
-		$scope.getFriends = function(){
-			return $http({
-				method: 'GET',
-				url: '/friends',
-			}).then(function(success){
-				for(var i = 0; i < success.friends.length; i++){
-					$rootScope.friends[success.friends[i].id] = success.friends[i].username;
-				}
-			}, function(err){
-				console.log(err);
-			})
-		}
-
-
-
-				// for(var i = 0; i < success.results.length; i++){
-				// 	if($rootScope.friends[success.results[i].UserId]){
-				// 		$scope.events.push(success.results[i]);
-				// 	}
-				// }
-
-
-		$scope.checkEvents = function(){
-			return $http({
-				method: 'GET',
-				url: '/eventslist'
-				// , data: {order: "-createdAt"}
-			})
-			.then(function(success){
-				$rootScope.events = success.results;
-			}, function(err){
-				console.log(err);
-			});
-		}
-
-
+		console.log("scope.events", $scope.events);
 
 	});
