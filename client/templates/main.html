@@ -3,25 +3,32 @@
 	<div>
 		<button ui-sref="settings">Settings</button>
 	</div>
-	<div>
+<!-- 	<div>
 		<button ng-click = "bro()">Broski</button>
+	</div> -->
+	<div>
+		<button ng-click = "brew()" ng-hide = "isDisabled" >Brewski</button>
 	</div>
 	<div>
-		<button ng-click = "brew()" ng-disabled = "isDisabled" >Brewski</button>
+		<button ng-disabled="true" ng-show = "pending"> Brewski Pending </button>
+	</div>
+	<div>
+		<button ng-click = "goToEvent()" ng-show="showEvent">Go To Event</button>
 	</div>
 
 	<div>
 		<ul>
-			<li ng-repeat = "brews in brewskisArray | filter: {eventType: 1}">
+		<!-- | filter: {eventType: 1} -->
+			<li ng-repeat = "brews in events">
 				{{brews.ownerName + " invites you to get a brewski" + alreadyEvent()}}
 				<button ng-hide = "userEventId" ng-click = "acceptBrewski(brews)">Accept</button>
 			</li>
 		</ul>
-		<ul>
+<!-- 		<ul>
 			<li ng-repeat = "bro in brewskisArray | filter: {eventType: 2}">
 				{{bro.ownerName + " says " + "Bro!"}}
 			</li>
-		</ul>
+		</ul> -->
 	</div>
 
 	<a ui-sref="settings">settings</a>
