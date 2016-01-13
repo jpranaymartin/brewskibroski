@@ -1,10 +1,10 @@
 angular.module('Auth')
 	.factory('AuthFactory', function($http){
 		var login = function(usern, passw){
-			console.log("username", usern, "password", passw);
+			console.log("Logging in as username: ", usern, " & password:", passw);
 			return $http ({
 				method: 'POST',
-				url: '/authlogin',
+				url: '/login',
 				data: {
 					username: usern,
 					password: passw
@@ -19,10 +19,10 @@ angular.module('Auth')
 		};
 
 		var signup = function(usern, passw1, email){
-			console.log("username", usern, "password", passw1, "email", email);
+			console.log("Signing up as username: ", usern, ", password: ", passw1, " & email: ", email);
 			return $http({
 				method: 'POST',
-				url: '/authsignup',
+				url: '/signup',
 				data: {
 					username: usern,
 					password: passw1,
@@ -31,6 +31,7 @@ angular.module('Auth')
 			})
 			.then(function(success){
 				console.log(success);
+				window.location.replace('/app');
 			}, function(err){
 				console.log(err);
 			})
