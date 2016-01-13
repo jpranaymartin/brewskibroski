@@ -6,56 +6,71 @@ angular.module('App.main',[])
 
 		$scope.toggleDisable = function(){
 			$scope.isDisabled = !$scope.isDisabled;
-		}
+		};
 
-		// $scope.brew = function() {
+		$scope.brew = function() {
+      if (!$rootScope.userAcceptedOrCreatedEvent) { //if no brewski event hosted
+        $scope.getLocation().then(function(result){
+          console.log("result of invite()", result, result.coords.latitude);
+          // $scope.toggleDisable();
+          $http({
+            method: 'POST',
+            url: '/events',
+            data: {
+              ownerLat: result.coords.latitude,
+              ownerLong: result.coords.longitude,
+              eventType: 1
+            }
+          }).then(function(success){
+            $rootScope.userAcceptedOrCreatedEvent = success;
+            $rootscope.user
+            console.log("Success: owner lat/long sent");
+          }, function(err){
+            console.log("Failure: owner lat/long not sent");
+            // $scope.toggleDisable();
+  				});
+  			});
+      } else {
+      //if brewski event exists
 
-		// 	//if user does not own an event and if they haven't accepted an event
+        //search through $rootScope.events array for event object with id of $rootScope
 
-		// 	$scope.getLocation().then(function(result){
-		// 		console.log("result of invite()", result, result.coords.latitude);
-		// 		// $scope.toggleDisable();
-		// 		$http({
-		// 			method: 'POST',
-		// 			url: '/event',
-		// 			data: {
-		// 				ownerLat: result.coords.latitude,
-		// 				ownerLong: result.coords.longitude,
-		// 				eventType: 1
-		// 			}
-		// 		}).then(function(success){
-		// 			$rootScope.userEventId = success.id;
-		// 			console.log("Success: owner lat/long sent");
-		// 		}, function(err){
-		// 			console.log("Failure: owner lat/long not sent");
-		// 			$scope.toggleDisable();
-		// 		});
-		// 	});
-
-		// 	//if user owns an event or if they have accepted event the button now takes them to their event
-
-		// 	$http({
-		// 		method: 'GET',
-		// 		url: '/events/' + $rootscope.userEventId
-		// 	}).then(function(success){
-		// 		console.log(success, "Inside GET for BREW() aka GO TO EVENT");
-		// 	}, function(err){
-		// 		console.log(err, "GET for BREW() aka GO TO EVENT errored");
-		// 	})
+        //POSSIBLE ISSUES:
+        // - upon event refresh from $interval, update a flag ($rootScope.eventAccepted???) with boolean
+        // - based on flag, disable/enable brewski button
+        // - PROBLEM: what if you host a brewski event, and before anyone accepts your invite, you accept another brewski invite?
 
 
 
-		// };
+      }
+      //if user does not own an event and if they haven't accepted an event
+      // $scope.toggleDisable();
 
 
-		
+			//if user owns an event or if they have accepted event the button now takes them to their event
+
+			// $http({
+			// 	method: 'GET',
+			// 	url: '/events/' + $rootscope.userEventId
+			// }).then(function(success){
+			// 	console.log(success, "Inside GET for BREW() aka GO TO EVENT");
+			// }, function(err){
+			// 	console.log(err, "GET for BREW() aka GO TO EVENT errored");
+			// })
+
+
+
+		};
+
+
+
 
 		$rootScope.userEventId = null;
 
 
 
 		$scope.alreadyEvent = function(){
-			if($rootScope.userEventId){return ", but you already have an event!";}else{return " ";}}
+			if($rootScope.userEventId){return ", but you already have an event!";}else{return " ";}};
 
 
 
@@ -64,7 +79,7 @@ angular.module('App.main',[])
 		$scope.acceptBrewski = function(event){
 
 			$scope.getLocation().then(function(success){
-			
+
 			$http({
 				method: 'POST',
 				url: '/eventaccept',
@@ -83,7 +98,7 @@ angular.module('App.main',[])
 						$location.path("/event");
 					}, function(err){
 						console.log("GET REQUEST FAILED FOR EVENTS PAGE AFTER PRESSING ACCEPT BREWSKI");
-					})
+					});
 
 
 				}, function(err){
@@ -100,7 +115,7 @@ angular.module('App.main',[])
 
 			return $http({
 				method: 'POST',
-				url: '/createevent',
+				url: '/events',
 				data: {
 					eventType: 2
 				}
@@ -133,71 +148,6 @@ angular.module('App.main',[])
 			//
 		}
 
-		$scope.brewskisArray = [
-    {
-      "id": 1,
-      "acceptedAt": "1452617593463",
-      "acceptedId": 1,
-      "eventType": 1,
-      "ownerName": "Daniel",
-      "acceptedName": "broseph",
-      "active": false,
-      "accepted": true,
-      "ownerLat": 34.341895,
-      "ownerLong": -118.1443,
-      "acceptedLat": 34.432131,
-      "acceptedLong": -118.4341621,
-      "centerLat": 34.387012999999996,
-      "centerLong": -118.28923105,
-      "createdAt": "2016-01-12T16:40:45.000Z",
-      "updatedAt": "2016-01-12T16:53:13.000Z",
-      "deletedAt": null,
-      "UserId": 2,
-      "username": "broseph"
-    },
-    {
-      "id": 3,
-      "acceptedAt": "1452620856337",
-      "acceptedId": 1,
-      "eventType": 1,
-      "ownerName": "broseph",
-      "acceptedName": "broseph",
-      "active": false,
-      "accepted": true,
-      "ownerLat": 34.341895,
-      "ownerLong": -118.1443,
-      "acceptedLat": 34.432131,
-      "acceptedLong": -118.4341621,
-      "centerLat": 34.387012999999996,
-      "centerLong": -118.28923105,
-      "createdAt": "2016-01-12T17:46:03.000Z",
-      "updatedAt": "2016-01-12T17:47:36.000Z",
-      "deletedAt": null,
-      "UserId": 1,
-      "username": "Daniel"
-    },
-    {
-      "id": 4,
-      "acceptedAt": null,
-      "acceptedId": null,
-      "eventType": 2,
-      "ownerName": "broseph",
-      "acceptedName": null,
-      "active": true,
-      "accepted": false,
-      "ownerLat": 34.31895,
-      "ownerLong": -118.443,
-      "acceptedLat": null,
-      "acceptedLong": null,
-      "centerLat": null,
-      "centerLong": null,
-      "createdAt": "2016-01-12T18:06:31.000Z",
-      "updatedAt": "2016-01-12T18:06:31.000Z",
-      "deletedAt": null,
-      "UserId": 1,
-      "username": "thecoolestbro"
-    }
-  ]
 
 
   // 		console.log($scope.timelineArray);
@@ -210,7 +160,7 @@ angular.module('App.main',[])
 		// 	$scope.getLocation();
 		// 	$interval($scope.check, 5000);
 		// }
-		
+
 		// $scope.init();
 
 		//GOES INTO APP FACTORY!!!!!!!!!
@@ -219,9 +169,8 @@ angular.module('App.main',[])
 			{id: 2, username: "test"}
 		];
 		//GOES INTO APP FACTORY!!!!!!!!!
-		$rootScope.events = [];
+		$rootScope.events = []; //LIST OF EVENTS (SHOULD BE UPDATED CONSTANTLY WITH $INTERVAL)
 
-		
 		// {
 		// 	friends: [
 		// 		{id: 1, username: "ariel"},
