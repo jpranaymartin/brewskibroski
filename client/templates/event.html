@@ -1,22 +1,22 @@
 <div>
-	<h1>Event HTML</h1>
-	<div>
-		<button ui-sref="main">home</button>
-	</div>
-	<div>
-		<h1>MAP HERE</h1>
-	</div>
-	<div>
-		<h1>UBER PRICE</h1>
-	</div>
+  <h1>Event HTML</h1>
+  <div>
+    <button ui-sref="main">home</button>
+  </div>
+  <div>
+    <h1>MAP HERE</h1>
+  </div>
 
-	<div>
-		<ul>
-		</ul>
-	</div>
+  <div>{{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at {{ barInfo.name }} at {{ barInfo.address[0] }}, {{ barInfo.address[1] }}</div>
+  <div>
+    <h1>UBER PRICE</h1>
+    <div> Just shell out {{uber.uberX.estimate}} for an {{uber.uberX.display_name}} to get there and you'll be popping in no time</div>
+  </div>
 
-	<a ui-sref="settings">settings</a>
+  <div>
+    <ul>
+    </ul>
+  </div>
 
-	<div>{{ stuff }}</div>
-
+  <a ui-sref="settings">settings</a>
 </div>
