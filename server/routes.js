@@ -348,7 +348,7 @@ router.post('/events', function(request, response) {
               result.ownerName = owner.username;
               result.save()
               console.log('time to turn up, Bro-ntosaurus!')
-              response.status(201)
+              response.status(201).send(result);
               response.end()
             })
           } else {
