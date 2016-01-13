@@ -396,4 +396,19 @@ router.post('/yelp', function (request, response) {
   util.searchYelpApi(request, response, centerLat, centerLong);
 });
 
+// Search Uber
+router.post('/uber', function (request, response) {
+  var startLat = request.body.startLat;
+  var startLong = request.body.startLong;
+  var endLat = request.body.endLat;
+  var endLong = request.body.endLong;
+
+  console.log("Start lat from form: ", startLat);
+  console.log("Start long from form: ", startLong);
+  console.log("End lat from form: ", endLat);
+  console.log("End long from form: ", endLong);
+
+  util.searchUberApi(request, response, startLat, startLong, endLat, endLong);
+});
+
 module.exports = router;

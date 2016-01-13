@@ -1,6 +1,16 @@
 // Requirements
 var session = require('express-session');
 var Yelp = require('yelp');
+var Uber = require('node-uber');
+ 
+// Uber key
+var uber = new Uber({
+  client_id: 's7Z67Tq2-omqdyXmEVMIXdkn_krzD563',
+  client_secret: '4a28nXO-xh268LUzPSmtpuhSBfN0NgYfW_TLmhuY',
+  server_token: '_b13GTgZy1rf08rRQK9bYrfl2E0WNWC9oUMgArQR',
+  redirect_uri: 'REDIRECT URL',
+  name: 'Brewski, Broski?'
+});
 
 // Yelp key
 var yelp = new Yelp({
@@ -64,7 +74,7 @@ exports.searchYelpApi = function (request, response, centerLat, centerLong){
   var closestBar = [];
   console.log("Center lat long before API call: ", cll);
 
-  yelp.search({ term: 'bar', ll: cll, limit: 1 })
+  yelp.search({ term: 'bar', ll: cll, limit: 1, sort: 1 })
   .then(function (data) {
     var address = data.businesses[0].location.display_address;
     address.splice(1,1);
@@ -76,5 +86,25 @@ exports.searchYelpApi = function (request, response, centerLat, centerLong){
   })
   .catch(function (err) {
   response.send(err);
+  });
+}
+
+exports.searchUberApi = function (request, response, startLat, startLong, endLat, endLong){
+  uber.estimates.price({ 
+    start_latitude: startLat, start_longitude: startLong, 
+    end_latitude: endLat, end_longitude: endLong
+  }, function (err, res) {
+    if (err) { 
+      console.error(err); 
+    } else {
+      response.send( { 
+        uberX: res.prices[0],
+        uberXL: res.prices[1],
+        uberSELECT: res.prices[3],
+        uberBLACK: res.prices[4],
+        uberSUV: res.prices[5],
+        uberLUX: res.prices[6]
+      });
+    }
   });
 }
