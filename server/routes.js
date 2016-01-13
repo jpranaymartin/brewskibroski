@@ -371,4 +371,15 @@ router.post('/events', function(request, response) {
   }
 })
 
+// Search Yelp
+  router.post('/yelp', function (request, response) {
+    var centerLat = request.body.centerLat;
+    var centerLong = request.body.centerLong;
+    console.log("Center lat from form: ", centerLat);
+    console.log("Center long from form: ",centerLong);
+
+    util.searchYelpApi(request, response, centerLat, centerLong);
+
+  })
+
 module.exports = router;
