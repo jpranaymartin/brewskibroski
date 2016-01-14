@@ -96,7 +96,7 @@ router.get('/app', util.checkUser, function(request, response) {
 });
 
 // Get current user's friends
-router.get('/friends', function(request, response) {
+router.get('/friends', util.checkUser, function(request, response) {
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
         replacements: [request.session.user],
@@ -110,7 +110,7 @@ router.get('/friends', function(request, response) {
 });
 
 // Add a friend to current user
-router.post('/friends', function(request, response) {
+router.post('/friends', util.checkUser, function(request, response) {
   console.log("request.body: ", request.body)
   var friend = request.body.friend;
   console.log("friend: ", friend)
@@ -156,7 +156,7 @@ router.post('/friends', function(request, response) {
 });
 
 // Check one event
-router.get('/events/:id', function(request, response) {
+router.get('/events/:id', util.checkUser, function(request, response) {
   var eventId = request.params.id;
   console.log("eventId", eventId);
   seq.query(
@@ -201,7 +201,7 @@ router.get('/events/:id', function(request, response) {
 });
 
 // Get a list of all events
-router.get('/events', function(request, response) {
+router.get('/events', util.checkUser, function(request, response) {
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
         replacements: [request.session.user],
@@ -219,10 +219,20 @@ router.get('/events', function(request, response) {
             }
           };
         });
+
+        var timelimit = new Date();
+        console.log(timelimit);
+
+        timelimit.setHours(timelimit.getHours() - 1);
+        console.log(timelimit);
+
         db.Event.findAll({
           where: {
             accepted: 0,
-            $or: friendIds
+            $or: friendIds,
+            createdAt: {
+              $gt: timelimit
+            }
           }
         }).then(function(item) {
           if (item) {
@@ -230,7 +240,7 @@ router.get('/events', function(request, response) {
               if(friendList[index]){
                 item.dataValues.username = friendList[index].username;
                 return item
-              } return "undefined";
+              }
             })
             response.status(200).json({
               results
@@ -246,7 +256,7 @@ router.get('/events', function(request, response) {
 });
 
 // Accept event invite
-router.post('/events/:id', function(request, response) {
+router.post('/events/:id', util.checkUser, function(request, response) {
   var id = request.params.id;
   var acceptedId = request.session.user;
   var acceptedAt = Date.now();
@@ -304,19 +314,25 @@ router.post('/events/:id', function(request, response) {
 });
 
 // Creating new event
-router.post('/events', function(request, response) {
+router.post('/events', util.checkUser, function(request, response) {
   var UserId = request.session.user;
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
   var active = true;
-  // var eventType = request.body.eventType; //NEED TO UNCOMMENT TO ADD BROSKIS
+  var eventType = request.body.eventType;
 
-  if (UserId !== null || ownerLat !== null || ownerLong !== null || active !==
-    null) {
+  if (UserId !== null || ownerLat !== null || ownerLong !== null || active !== null) {
+
+    var timelimit = new Date();
+    timelimit.setHours(timelimit.getHours() - 1);
+
     db.Event.find({
       where: {
         UserId: UserId,
-        active: active
+        createdAt: {
+          $gt: timelimit
+        },
+        accepted: false
       }
     }).then(function(result) {
       if(result === null) {
@@ -363,7 +379,7 @@ router.post('/events', function(request, response) {
 });
 
 // Return current user
-router.get('/user', function (request, response) {
+router.get('/user', util.checkUser, function (request, response) {
   db.User.find({
     where: {
       id: request.session.user
