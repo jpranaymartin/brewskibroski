@@ -115,44 +115,49 @@ router.post('/friends', util.checkUser, function(request, response) {
   var friend = request.body.friend;
   console.log("friend: ", friend)
   console.log("request.session.user: ", request.session.user)
-  db.User.find({
-    where: {
-      username: friend
-    }
-  }).then(function(foundFriend) {
-    console.log("foundFriend: ", foundFriend)
-    if (foundFriend) {
-      db.Friend.findOrCreate({
-        where: {
-          friendId: foundFriend.id,
-          UserId: request.session.user
-        }
-      }).spread(function(result) {
-        if (result.$options.isNewRecord === true) {
-          db.Friend.findOrCreate({
-            where: {
-              friendId: request.session.user,
-              UserId: foundFriend.id
-            }
-          }).spread(function(result) {
-            if (result.$options.isNewRecord === true) {
-              console.log('You two are bros now!')
-              response.sendStatus(201)
-            } else {
-              console.log("bromance already created")
-              response.sendStatus(409)
-            }
-          })
-        } else {
-          console.log("bromance already created")
-          response.sendStatus(409)
-        }
-      });
-    } else {
-      console.log("That friend doesn't exist, bromancer")
-      response.sendStatus(404)
-    }
-  });
+  if (Number(friend) !== request.session.user) {
+    db.User.find({
+      where: {
+        username: friend
+      }
+    }).then(function(foundFriend) {
+      console.log("foundFriend: ", foundFriend)
+      if (foundFriend) {
+        db.Friend.findOrCreate({
+          where: {
+            friendId: foundFriend.id,
+            UserId: request.session.user
+          }
+        }).spread(function(result) {
+          if (result.$options.isNewRecord === true) {
+            db.Friend.findOrCreate({
+              where: {
+                friendId: request.session.user,
+                UserId: foundFriend.id
+              }
+            }).spread(function(result) {
+              if (result.$options.isNewRecord === true) {
+                console.log('You two are bros now!')
+                response.sendStatus(201)
+              } else {
+                console.log("bromance already created inside")
+                response.sendStatus(409)
+              }
+            })
+          } else {
+            console.log("bromance already created")
+            response.sendStatus(409)
+          }
+        });
+      } else {
+        console.log("That friend doesn't exist, bromancer")
+        response.sendStatus(404)
+      }
+    });
+  } else{
+    console.log("you can't be your own bro, bro")
+    response.sendStatus(406)
+  }
 });
 
 // Check one event
@@ -331,10 +336,9 @@ router.post('/events', util.checkUser, function(request, response) {
   var UserId = request.session.user;
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
-  var active = true;
   var eventType = request.body.eventType;
 
-  if (UserId !== null || ownerLat !== null || ownerLong !== null || active !== null) {
+  if (UserId !== null || ownerLat !== null || ownerLong !== null) {
 
     var timelimit = new Date();
     timelimit.setHours(timelimit.getHours() - 1);
@@ -353,8 +357,7 @@ router.post('/events', util.checkUser, function(request, response) {
         db.Event.create({
           UserId: UserId,
           ownerLat: ownerLat,
-          ownerLong: ownerLong,
-          active: active
+          ownerLong: ownerLong
         }).then(function(result){
           if (result.$options.isNewRecord === true) {
             console.log("here2")
