@@ -26,7 +26,7 @@ router.get('/', util.checkUser, function(request, response) {
 router.get('/login', function(request, response) {
   var dirname = __dirname
   dirname = dirname.slice(0, -6)
-  response.sendFile(dirname + '/client/auth.html')
+  response.status(200).sendFile(dirname + '/client/auth.html')
 })
 
 // Create a new User
@@ -48,11 +48,11 @@ router.post('/signup', function(request, response) {
       } else {
         var dirname = __dirname;
         dirname = dirname.slice(0, -6);
-        response.sendFile(dirname + '/client/auth.html');
+        response.status(409).sendFile(dirname + '/client/auth.html');
       }
     })
   } else {
-    response.sendStatus(401);
+    response.sendStatus(400);
   };
 })
 
@@ -75,17 +75,17 @@ router.post('/login', function(request, response) {
       util.createSession(request, response, result.id);
     } else {
       response.sendStatus(401);
-    }
-  })
-})
+    };
+  });
+});
 
 // User logout
 router.get('/logout', function(request, response) {
   request.session.destroy(function() {
     console.log("You\'re out, Bromeslice")
     response.redirect('/login');
-  })
-})
+  });
+});
 
 // Reroute to app
 router.get('/app', util.checkUser, function(request, response) {
@@ -93,7 +93,7 @@ router.get('/app', util.checkUser, function(request, response) {
   dirname = dirname.slice(0, -6)
   console.log("You're in, Broce Lee!")
   response.status(202).sendFile(dirname + '/client/app.html');
-})
+});
 
 // Get current user's friends
 router.get('/friends', function(request, response) {
@@ -103,12 +103,11 @@ router.get('/friends', function(request, response) {
         type: sequelize.QueryTypes.SELECT
       })
     .then(function(friends) {
-      response.json({
+      response.status(200).json({
         friends
-      })
-      response.end()
+      });
     });
-})
+});
 
 // Add a friend to current user
 router.post('/friends', function(request, response) {
@@ -138,24 +137,20 @@ router.post('/friends', function(request, response) {
           }).spread(function(result) {
             if (result.$options.isNewRecord === true) {
               console.log('You two are bros now!')
-              response.status(201)
-              response.end()
+              response.sendStatus(201)
             } else {
               console.log("bromance already created")
-              response.status(404)
-              response.end()
+              response.sendStatus(409)
             }
           })
         } else {
           console.log("bromance already created")
-          response.status(404)
-          response.end()
+          response.sendStatus(409)
         }
       });
     } else {
       console.log("That friend doesn't exist, bromancer")
-      response.status(404)
-      response.end()
+      response.sendStatus(404)
     }
   });
 });
@@ -192,12 +187,10 @@ router.get('/events/:id', function(request, response) {
               item.dataValues.username = friendList[index].username;
               return item
             })
-            response.json({
+            response.status(200).json({
               results
             })
-            response.end()
           } else {
-            console.log("what?")
             response.sendStatus(404);
           };
         });
@@ -239,10 +232,9 @@ router.get('/events', function(request, response) {
                 return item
               } return "undefined";
             })
-            response.json({
+            response.status(200).json({
               results
             })
-            response.end()
           } else {
             response.sendStatus(404)
           };
@@ -263,9 +255,7 @@ router.post('/events/:id', function(request, response) {
 
   db.Event.findById(id)
     .then(function(acceptedEvent) {
-
       if (acceptedEvent.active === true) {
-
         db.User.find({
             where: {
               id: request.session.user
@@ -277,14 +267,11 @@ router.post('/events/:id', function(request, response) {
             var lon1 = acceptedEvent.ownerLong;
             var lat2 = acceptedLat;
             var lon2 = acceptedLong;
-
-            //DEFINE CENTRAL LAT/LONG
             var ownerPoints = [lat1, lon1]
             var acceptedPoints = [lat2, lon2]
             var centralLatLong;
             centralLatLong = util.getCentralPoints(ownerPoints,
               acceptedPoints, 1)
-
             console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
               null, "\t"));
             acceptedEvent.acceptedName = acceptor.username;
@@ -296,18 +283,22 @@ router.post('/events/:id', function(request, response) {
             acceptedEvent.centerLong = centralLatLong[0].y;
             acceptedEvent.accepted = true;
             acceptedEvent.active = false;
-
             console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
               null, "\t"));
             acceptedEvent.save()
             console.log("Sweet! We updated that event, Angelina Brolie.")
-            response.json(acceptedEvent)
+            response.status(202).json(acceptedEvent)
             response.end()
+            acceptor.update({
+                currentEvent: acceptedEvent.id
+              })
+              .then(function () {
+                console.log("currentEvent updated for", request.session.user)
+              })
           })
-
       } else {
         console.log("That event already expired, Brosephalus.")
-        response.status(406)
+        response.status(403)
         response.end()
       };
     });
@@ -323,7 +314,6 @@ router.post('/events', function(request, response) {
 
   if (UserId !== null || ownerLat !== null || ownerLong !== null || active !==
     null) {
-
     db.Event.find({
       where: {
         UserId: UserId,
@@ -349,28 +339,31 @@ router.post('/events', function(request, response) {
               result.save()
               console.log('time to turn up, Bro-ntosaurus!')
               response.status(201).send(result);
-              response.end()
+              owner.update({
+                currentEvent: result.id
+              })
+              .then(function () {
+                console.log("currentEvent updated for", request.session.user)
+              })
             })
           } else {
             console.log("Event already created, Broham")
-            response.status(404)
-            response.end()
+            response.sendStatus(409)
           }
         });
       } else {
         console.log("Event already created, Broham")
-        response.status(404)
-        response.end()
+        response.sendStatus(409)
       }
     });
-
   } else {
     console.log("Bro, some or all your incoming data is null, bro")
-    response.status(404)
+    response.sendStatus(400)
     response.end()
   }
 });
 
+// Return current user
 router.get('/user', function (request, response) {
   db.User.find({
     where: {
@@ -380,9 +373,11 @@ router.get('/user', function (request, response) {
     console.log("/user db search result:", result);
     var user = {
       id: result.id,
-      username: result.username
+      username: result.username,
+      currentEvent: result.currentEvent
+
     }
-    response.send(user);
+    response.status(200).send(user);
   });
 });
 

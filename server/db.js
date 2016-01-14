@@ -18,6 +18,10 @@ var User = sequelize.define('User', {
   email: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  currentEvent: {
+    type: Sequelize.INTEGER,
+    allowNull: true
   }
 }, {
   timestamps: true
