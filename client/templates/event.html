@@ -1,13 +1,12 @@
 <div>
   <div>
-    <button class="button topButton" ui-sref="main">BRESKI BROSKI</button>
+    <button class="button topButton" ui-sref="main">BREWSKI BROSKI</button>
   <div>
     <h1>MAP HERE</h1>
   </div>
 
-  <div>{{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at {{ barInfo.name }} at {{ barInfo.address[0] }}, {{ barInfo.address[1] }}</div>
-  <div>
-    <h1>UBER PRICE</h1>
+  <div class="eventInfo sectionInvite" id="eventLocation">{{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at {{ barInfo.name }} at {{ barInfo.address[0] }}, {{ barInfo.address[1] }}</div>
+  <div class="eventInfo sectionInvite" id="eventUber">
     <div> Just shell out {{uber.uberX.estimate}} for an {{uber.uberX.display_name}} to get there and you'll be popping in no time</div>
   </div>
 
@@ -15,6 +14,4 @@
     <ul>
     </ul>
   </div>
-
-  <a ui-sref="settings">settings</a>
 </div>

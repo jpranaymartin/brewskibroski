@@ -1,25 +1,19 @@
 <div>
-	<h1>Settings HTML</h1>
-
-	<div>
-		<button ui-sref="main">Home</button>
-	</div>
+  <div>
+    <button class="button topButton" ui-sref="main">BREWSKI BROSKI</button>
+  <div>
 
 	<div>
 		<form>
-			<input placeholder = "Search for Friends" ng-model="potentialFriend" required>
+			<input class="section" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
 		</form>
-		<button ng-click="addFriend()">Add Friend</button>
+		<div class="section">
+			<button class="button" id="addFriend" ng-click="addFriend()">Add Friend</button>
+		</div>
 	</div>
-
-	<div>
-		<button ng-click="logout()">Logout</button>
+  <div class="friends" ng-repeat="friend in friends">{{friend.username}}
+  </div>
+	<div class="section">
+		<button class="button error" ng-click="logout()">Logout</button>
 	</div>
-
-	<div>
-		<ul>
-      <li ng-repeat="friend in friends">{{friend.username}}</li>
-		</ul>
-	</div>
-
 </div>
