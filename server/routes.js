@@ -263,6 +263,8 @@ router.post('/events/:id', util.checkUser, function(request, response) {
   var acceptedLat = request.body.acceptedLat;
   var acceptedLong = request.body.acceptedLong;
 
+
+
   db.Event.findById(id)
     .then(function(acceptedEvent) {
       if (acceptedEvent.accepted !== true) {
@@ -296,8 +298,20 @@ router.post('/events/:id', util.checkUser, function(request, response) {
               null, "\t"));
             acceptedEvent.save()
             console.log("Sweet! We updated that event, Angelina Brolie.")
+
+            db.User.findById(request.session.user)
+            .then(function (currentUser) {
+              console.log("currentUser")
+              db.Event.findById(currentUser.currentEvent)
+              .then(function (currentEvent) {
+                console.log("currentEvent")
+                currentEvent.update({
+                  accepted: true
+                })
+              })
+            })
+
             response.status(202).json(acceptedEvent)
-            response.end()
             acceptor.update({
                 currentEvent: acceptedEvent.id
               })
@@ -308,7 +322,6 @@ router.post('/events/:id', util.checkUser, function(request, response) {
       } else {
         console.log("That event already expired, Brosephalus.")
         response.status(403)
-        response.end()
       };
     });
 });
@@ -390,7 +403,6 @@ router.get('/user', util.checkUser, function (request, response) {
       id: result.id,
       username: result.username,
       currentEvent: result.currentEvent
-
     }
     response.status(200).send(user);
   });
