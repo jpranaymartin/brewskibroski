@@ -255,7 +255,7 @@ router.post('/events/:id', function(request, response) {
 
   db.Event.findById(id)
     .then(function(acceptedEvent) {
-      if (acceptedEvent.active === true) {
+      if (acceptedEvent.accepted !== true) {
         db.User.find({
             where: {
               id: request.session.user
@@ -282,7 +282,6 @@ router.post('/events/:id', function(request, response) {
             acceptedEvent.centerLat = centralLatLong[0].x;
             acceptedEvent.centerLong = centralLatLong[0].y;
             acceptedEvent.accepted = true;
-            acceptedEvent.active = false;
             console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
               null, "\t"));
             acceptedEvent.save()
@@ -387,7 +386,6 @@ router.post('/yelp', function (request, response) {
   var centerLong = request.body.centerLong;
   console.log("Center lat from form: ", centerLat);
   console.log("Center long from form: ",centerLong);
-
   util.searchYelpApi(request, response, centerLat, centerLong);
 });
 
