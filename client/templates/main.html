@@ -3,11 +3,13 @@
 		<button class="button topButton" ui-sref="settings">BREWSKI BROSKI</button>
 	</div>
 	<div>
-		<button class="section button" id="brewskiButton" ng-click = "brew()" >Brewski</button>
+		<button class="section button" id="brewskiButton" ng-click = "brew()" ng-hide = "isDisabled" >Brewski</button>
 	</div>
 	<div>
-		<button class="section" id="grayButton" ng-disabled="true" ng-show="pending">
-			<p>Brewski Pending<p>
+	<div class="section" ng-disabled="true" ng-show="pending">
+		<button class="button" id="grayButton">
+	<div>
+			Brewski Pending
 		</button>
 	</div>
 	<div>
@@ -19,7 +21,7 @@
 
 	<div>
 		<!-- | filter: {eventType: 1} -->
-			<div class="section sectionInvite"  ng-repeat = "brews in events">
+			<div  ng-repeat = "brews in events">
 
 				<button class="button brewskiInvite sectionInvite" ng-hide = "userEventId" ng-click = "acceptBrewski(brews)">Brewski with {{brews.ownerName + alreadyEvent()}}</button>
 			</div>
