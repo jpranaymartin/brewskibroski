@@ -1,15 +1,18 @@
 <div>
-	<p>Login HTML </p>
 	<form name = "loginForm" ng-submit = "login()" novalidate>
-		<input type = "text" name="usernamename"placeholder = "username" ng-model = "user" required>
+		<input class="section" type = "text" autocomplete="off" name="usernamename"placeholder = "username" ng-model = "user" required>
 		<div ng-messages = "loginForm.usernamename.$error" ng-if = "loginForm.usernamename.$dirty">
-			<div ng-message="required">Username is required</div>
+			<div class=" section error" ng-message="required"><p>Username is required</p></div>
 		</div>
-		<input type = "text" name="passwordname"placeholder = "password" ng-model = "pass" required>
+		<input class="section" type = "text" autocomplete="off" name="passwordname"placeholder = "password" ng-model = "pass" required>
 		<div ng-messages = "loginForm.passwordname.$error" ng-if = "loginForm.passwordname.$dirty">
-			<div ng-message="required">Password is required</div>
+			<div class=" section error" ng-message="required"><p>Password is required<p></div>
 		</div>
-		<button type = "submit" ng-disabled="loginForm.$invalid">Login</button>
-	</form>
-	<p><a ui-sref="signup">Signup</a></p>
+    <div class="section">
+    <button class="button" id="loginButton" type = "submit" ng-disabled="loginForm.$invalid">LOGIN</button>
+    </div>
+    <div class="section" id="signupButton">
+	    <p ui-sref="signup">SIGNUP</p>
+    </div>
+  </form>
 </div>

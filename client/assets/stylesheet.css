@@ -1,0 +1,158 @@
+/*==============================*\
+General style
+\*==============================*/
+
+body{
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: #2C2D39;
+  text-align: center;
+  text-decoration: none !important;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 100;
+  font-size: 40px;
+  color: white;
+}
+
+.section{
+  display: block;
+  width: 100%;
+  height: 64px;
+  float: right;
+}
+
+.section p{
+  position: relative;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/*==============================*\
+Login View
+\*==============================*/
+
+::-webkit-input-placeholder{
+  size: 30px;
+}
+
+:placeholder-shown {
+  font-size: 40px;
+}
+
+input, select, textarea{
+  font-size: 40px;
+  outline: none;
+  text-align: center;
+}
+
+*:focus {
+  outline: none;
+}
+
+.inputUsername{
+  background-color: black;
+}
+
+.button{
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+  color: white;
+  border: none;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+#loginButton{
+   background-color: #1AA35F;
+}
+
+#signupButton{
+  background-color: #4A87C8;
+}
+
+
+/*==============================*\
+Signup View
+\*==============================*/
+
+#goBackButton{
+ background-color: #A5DA38;
+}
+
+/*==============================*\
+Main View
+\*==============================*/
+
+.topButton{
+  background-color: #2C2D39;
+}
+
+#brewskiButton{
+  background-color: #FC9C48;
+}
+
+#grayButton{
+ background-color: #D3D3D3;
+}
+
+#broskiButton{
+  background-color: #005D5B;
+}
+
+.brewskiInvite{
+ background-color: #FEC417;
+}
+
+.sectionInvite{
+  height: 100%;
+  border-bottom: 1px solid #2C2D39;
+}
+
+/*==============================*\
+Event View
+\*==============================*/
+#map{
+  clear:both;
+}
+.eventInfo{
+  min-height: 64px;
+}
+
+#eventLocation{
+  background-color: #FEC417;
+}
+
+#eventUber{
+  background-color: #555B80;
+}
+
+/*==============================*\
+Settings Page
+\*==============================*/
+
+
+
+#addFriend{
+  background-color: #D5513D;
+}
+
+.friends{
+  background-color: #1CB1AD;
+  border-bottom: 1px solid #2C2D39;
+}
+
+#logoutButton{
+   background-color: #B80000;
+}
+
+/*==============================*\
+Misc
+\*==============================*/
+
+.error{
+   background-color: #B80000;
+}
+

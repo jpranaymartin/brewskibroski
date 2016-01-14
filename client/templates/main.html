@@ -1,36 +1,28 @@
 <div>
-	<h1>MAIN HTML</h1>
 	<div>
-		<button ui-sref="settings">Settings</button>
+		<button class="button topButton" ui-sref="settings">BRESKI BROSKI</button>
 	</div>
-<!-- 	<div>
-		<button ng-click = "bro()">Broski</button>
-	</div> -->
-	<div class="section brewski">
-		<button ng-click = "brew()" ng-hide = "isDisabled" >Brewski</button>
+	<div class="section">
+		<button class="button section" id="brewskiButton" ng-click = "brew()" ng-hide = "isDisabled" >Brewski</button>
 	</div>
 	<div>
-		<button ng-disabled="true" ng-show = "pending"> Brewski Pending </button>
+		<button class="section" id="grayButton"ng-disabled="true" ng-show = "pending"> Brewski Pending </button>
+	</div>
+	<div class="section">
+		<button  class="button section" id="broskiButton" ng-click = "bro()">Broski</button>
 	</div>
 	<div>
 		<button ng-click = "goToEvent()" ng-show="showEvent">Go To Event</button>
 	</div>
 
 	<div>
-		<ul>
 		<!-- | filter: {eventType: 1} -->
-			<li ng-repeat = "brews in events">
-				{{brews.ownerName + " invites you to get a brewski" + alreadyEvent()}}
-				<button ng-hide = "userEventId" ng-click = "acceptBrewski(brews)">Accept</button>
-			</li>
-		</ul>
+			<div  ng-repeat = "brews in events">
+
+				<button class="button brewskiInvite sectionInvite" ng-hide = "userEventId" ng-click = "acceptBrewski(brews)">{{brews.ownerName + " invites you to get a brewski" + alreadyEvent()}}</button>
+			</div>
 <!-- 		<ul>
 			<li ng-repeat = "bro in brewskisArray | filter: {eventType: 2}">
 				{{bro.ownerName + " says " + "Bro!"}}
 			</li>
 		</ul> -->
-	</div>
-
-	<a ui-sref="settings">settings</a>
-
-</div>
