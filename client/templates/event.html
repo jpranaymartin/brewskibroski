@@ -1,17 +1,25 @@
 <div>
   <div>
-    <button class="button topButton" ui-sref="main">BREWSKI BROSKI</button>
-    <div>
-      <my-maps id="map-canvas"></my-maps>
-    </div>
+    <button class="button topButton" ui-sref="main">BREWSKI, BROSKI?</button>
 
-  <div class="eventInfo sectionInvite" id="eventLocation">{{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at {{ barInfo.name }} at {{ barInfo.address[0] }}, {{ barInfo.address[1] }}</div>
-  <div class="eventInfo sectionInvite" id="eventUber">
-    <div> Just shell out {{uber.uberX.estimate}} for an {{uber.uberX.display_name}} to get there and you'll be popping in no time</div>
-  </div>
+      <div>
+        <my-maps id="map-canvas"></my-maps>
+      </div>
 
-  <div>
-    <ul>
-    </ul>
+    <span ng-show="test.hidden">
+      <div id='beerLoad'>
+        <img src='../assets/images/loadBeer.gif'>
+      </div> 
+    </span>
+    
+    <span ng-show="!test.hidden">
+      <div class="eventInfo sectionInvite" id="eventLocation">
+        {{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at {{ barInfo.name }} at {{ barInfo.address[0] }}, {{ barInfo.address[1] }}
+      </div>
+      <div class="eventInfo sectionInvite" id="eventUber">
+        Just shell out {{uber.uberX.estimate}} for an {{uber.uberX.display_name}} to get there and you'll be popping in no time
+      </div>
+    </span>
+
   </div>
 </div>
