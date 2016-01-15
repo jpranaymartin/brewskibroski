@@ -2,7 +2,8 @@ angular.module('App',[
 	'ui.router',
 	'App.main',
 	'App.event',
-	'App.settings'
+	'App.settings',
+	'App.map'
 	])
 	.config(function($stateProvider, $urlRouterProvider){
 		$stateProvider
