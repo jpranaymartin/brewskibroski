@@ -4,11 +4,13 @@ angular.module('App')
 
     var userEvent = 0;
     var userId = 0;
+    var username = "";
 
 
     return {
       userEvent : userEvent,
-      userId: userId
+      userId: userId,
+      username: username
     };
 
 	});

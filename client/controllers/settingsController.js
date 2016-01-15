@@ -1,7 +1,6 @@
-angular.module('App.settings',[
-
-])
-.controller('SettingsController', function($scope, $http){
+angular.module('App.settings',[])
+.controller('SettingsController', function($scope, $http, AppFactory){
+  $scope.username = AppFactory.username;
 
   $scope.potentialFriend;
   $scope.friends = [];
