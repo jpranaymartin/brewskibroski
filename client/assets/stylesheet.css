@@ -22,6 +22,22 @@ body{
   float: right;
 }
 
+.section2 {
+  display: block;
+  width: 100%;
+  height: 64px;
+  float: right;
+}
+
+.button2 {
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+  color: white;
+  border: none;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
 .section p{
   position: relative;
   margin-top: 0px;
@@ -90,11 +106,11 @@ Main View
   background-color: #2C2D39;
 }
 
-#brewskiButton{
+.brewskiButton{
   background-color: #FC9C48;
 }
 
-#grayButton{
+.grayButton{
  background-color: #D3D3D3;
 }
 
@@ -159,6 +175,10 @@ Settings Page
 /*==============================*\
 Misc
 \*==============================*/
+
+.event {
+  background-color: green;
+}
 
 .error{
    background-color: #B80000;

@@ -1,27 +1,91 @@
 angular.module('App.main',[])
 	.controller('MainController', function($http, $scope, $q, $window, $location, $rootScope, AppFactory){
 
+		$scope.checkUserEvents = function(){
+			return $http({
+				method: 'GET',
+				url: '/user'
+			}).then(function(success){
+				console.log("ASSS", success);
+				if(success.data.currentEvent !== null){
+					console.log("success.data.results.currentEvent: ", success.data.currentEvent);
+					return $http({
+						method: 'GET',
+						url: '/events/' + success.data.currentEvent
+					}).then(function(success){
+						console.log("Inside 2nd GET request: success.data.results: ",success);
+						AppFactory.userEvent = success.data.results[0];
+						console.log("AppFactory.userEvent:", AppFactory.userEvent);
+					}, function(err){
+						console.log("error inside 2nd get request of checkUserEvents");
+					});
+				}
+			}, function(err){
+				console.log("ERROR: Inside 1st GET request of checkUserEvents");
+			}).finally(function(){
+				$scope.setBrewskiButtonTextAndFunction();
+			});
+		};
 
+		$scope.generateBro = function() {
+			var bros = [
+			  "bro!",
+			  "brohemith!",
+			  "broseph!",
+			  "Lebro James!",
+			  "Brohammad Ali!",
+			  "bromeo!",
+			  "Bromer Simpson!",
+			  "broskee!",
+			  "brohan!",
+			  "Abroham Lincoln!",
+			  "Bro-ntosaurus!",
+			  "Brorack Brobama!",
+			  "Brother Seamus!"
+			];
+
+
+			var key = Math.floor(Math.random() * bros.length);
+			console.log("key", key);
+
+			console.log("inside $scope.generateBro(BEFORE):", $scope.broMessage);
+			$scope.broMessage = bros[key];
+			console.log("inside $scope.generateBro(AFTER):", $scope.broMessage);
+		};
+
+		$scope.setBrewskiButtonTextAndFunction = function(){
+			if(!AppFactory.userEvent){
+				$scope.brewskiButtonText = "Brewski";
+				$scope.isDisabled = false;
+			} else if (AppFactory.userEvent && AppFactory.userEvent.accepted === false){
+				$scope.brewskiButtonText = "Brewski Pending";
+				$scope.isDisabled = true;
+			} else {
+				$scope.brewskiButtonText = "Event Details";
+				$scope.isDisabled = false;
+			}
+		};
+
+		$scope.brewskiButtonText = "Brewski";// Brewski  or Brewski Pending or Go To Event
+
+		$scope.broMessage = "bro!";
 
 		$scope.showEvent = AppFactory.userEvent ? AppFactory.userEvent.accepted : false;
-		//getUsername						WORKS
-		//checkEvents           WORKS
-		//showing events 				WORKS
-		//alreadyEvent()				WORKS
-		//acceptbrewski()				WORKS
+
 		console.log(AppFactory.userEvent);
 
 		$scope.pending = false;
 
 		$scope.init = function(){
-			$scope.setDisable();  // Get correct value for whether brewski button works
-			$scope.getLocation();   // Ask user for permission to use location for best UI experience
+			$scope.checkUserEvents();
+			// $scope.setBrewskiButtonTextAndFunction();
+			$scope.getLocation();
 			$scope.checkEvents();
-			$scope.getUsername();  // fetch events for timeline
+			$scope.getUsername();
 			console.log("AppFactory.userEvent", AppFactory.userEvent);
-		}
+			console.log("isDisabled:", $scope.isDisabled);
+		};
 
-		//WORKS
 		$scope.getUsername = function(){
 			$http({
 				method: 'GET',
@@ -30,10 +94,10 @@ angular.module('App.main',[])
 				AppFactory.userId = success.data.id;
 			}, function(err){
 				console.log(err, "ERROR: COULD NOT GET USERNAME! INSIDE getUsername");
-			})
-		}
+			});
+		};
 
-		$scope.isDisabled = false; //NEEDS TO BE ROOT SCOPE EVENTUALLY OR FACTORY
+		$scope.isDisabled = false;
 
 		$scope.events = []; //LIST OF EVENTS (SHOULD BE UPDATED CONSTANTLY WITH $INTERVAL)
 
@@ -46,34 +110,21 @@ angular.module('App.main',[])
 			})
 			.then(function(success){
 				$scope.events = success.data.results;
-				console.log("after GET req to /events, success.data.results:", success.data.results);
+				// console.log("after GET req to /events, success.data.results:", success.data.results);
 			}, function(err){
 				console.log(err);
 			});
-		}
-
-		$scope.setDisable = function(){
-			if(AppFactory.userEvent && AppFactory.userEvent.accepted === false){
-				$scope.isDisabled = true;
-				$scope.pending = true;
-				console.log("inside set Disable");
-			} else {
-				$scope.isDisabled= false;
-			}
-			// $scope.isDisabled = !$scope.isDisabled;
-			// if(!$rootScope.userEvent){
-			// 	$scope.isDisabled = false;
-			// }
-			// else if($rootScope.userEvent && $rootScope.userEvent.status === inactive){
-			// 	$scope.isDisabled = true;
-			// } else if ($rootScope.userEvent && $rootScope.userEvent.status === active){
-			// 	$scope.isDisabled = false;
-			// }
 		};
 
-		$scope.brew = function() {
+
+		$scope.brew = function(){
 		  // if (AppFactory.userEvent !== 0) { //if no brewski event hosted/accepted
-		    $scope.isDisabled = true;
+
+		  	if(!AppFactory.userEvent){
+
+        $scope.brewskiButtonText = "Brewski Pending";
+		  	$scope.isDisabled = true;
+
 		    $scope.getLocation().then(function(result) {
 		      console.log("result of invite()", result, result.coords.latitude);
 		      $http({
@@ -81,24 +132,24 @@ angular.module('App.main',[])
 		        url: '/events',
 		        data: {
 		          ownerLat: result.coords.latitude,
-		          ownerLong: result.coords.longitude
-		          //, eventType: 1
+		          ownerLong: result.coords.longitude,
+		          eventType: 1
 		        }
 		      }).then(function(success) {
 		        AppFactory.userEvent = success.data;
 		        console.log("Success: owner lat/long sent");
 		      }, function(err) {
 		        console.log("Failure: owner lat/long not sent");
-		      }).finally(function() {
-		        $scope.setDisable();
+		      }).finally(function(){
+		      	$scope.setBrewskiButtonTextAndFunction();
 		      });
 		    });
-		    // if userEvent exists and that event is accepted
-			// } else {
-			// 	$scope.setDisable();
-			// 	console.log("setDisable inside", $scope.isDisable);
-			// }
-		}
+		   } else if(AppFactory.userEvent && AppFactory.userEvent.accepted === true){
+		   	$scope.goToEvent();
+		   } else {
+		   	console.log("ERROR: INSIDE OF BREW()!");
+		   }
+		};
 
 		$scope.goToEvent = function() {
 			$http({
@@ -156,21 +207,25 @@ angular.module('App.main',[])
 
 		};
 
-		// $scope.bro = function(){
+		$scope.bro = function(){
+			$scope.generateBro();
 
-		// 	return $http({
-		// 		method: 'POST',
-		// 		url: '/events',
-		// 		data: {
-		// 			eventType: 2
-		// 		}
-		// 	}).then(function(success){
-		// 		console.log(success);
-		// 	}, function(err){
-		// 		console.log(err);
-		// 	})
+			console.log("inside $scope.bro, scope.broMessage is:", $scope.broMessage);
 
-		// };
+			return $http({
+				method: 'POST',
+				url: '/events',
+				data: {
+					eventType: 2,
+					message: $scope.broMessage
+				}
+			}).then(function(success){
+				console.log(success);
+			}, function(err){
+				console.log(err);
+			});
+
+		};
 
 		$scope.getLocation = function(){
 			var deferred = $q.defer();
@@ -192,6 +247,6 @@ angular.module('App.main',[])
 
 		$scope.init();
 
-		console.log("scope.events", $scope.events);
+		// console.log("scope.events", $scope.events);
 
 	});

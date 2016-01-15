@@ -55,7 +55,7 @@ angular.module('App.event',[])
       'get happening'
     ];
 
-    // $scope.event.party = party[_.random(0,14)]
+    $scope.event.party = party[Math.floor(Math.random() * party.length)];
 
      $scope.getUber = function (startLat, startLong, endLat, endLong){
        $http({
