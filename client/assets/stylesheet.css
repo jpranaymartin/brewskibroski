@@ -118,6 +118,10 @@ Main View
   background-color: #005D5B;
 }
 
+.greenButton{
+  background-color: green;
+}
+
 .brewskiInvite{
  background-color: #FEC417;
 }

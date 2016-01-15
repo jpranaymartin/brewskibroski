@@ -7,14 +7,14 @@ angular.module('App.main',[])
 				url: '/user'
 			}).then(function(success){
 				console.log("ASSS", success);
-				if(success.data.currentEvent !== null){
+				if(success.data.currentEvent !== null || success.data.currentEvent.id !== AppFactory.userEvent.id){
 					console.log("success.data.results.currentEvent: ", success.data.currentEvent);
 					return $http({
 						method: 'GET',
 						url: '/events/' + success.data.currentEvent
 					}).then(function(success){
-						console.log("Inside 2nd GET request: success.data.results: ",success);
-						AppFactory.userEvent = success.data.results[0];
+						console.log("Inside 2nd GET request: success: ",success);
+						AppFactory.userEvent = success.data[0];
 						console.log("AppFactory.userEvent:", AppFactory.userEvent);
 					}, function(err){
 						console.log("error inside 2nd get request of checkUserEvents");
@@ -24,6 +24,7 @@ angular.module('App.main',[])
 				console.log("ERROR: Inside 1st GET request of checkUserEvents");
 			}).finally(function(){
 				$scope.setBrewskiButtonTextAndFunction();
+				$scope.setEventButton();
 			});
 		};
 
@@ -61,10 +62,23 @@ angular.module('App.main',[])
 				$scope.brewskiButtonText = "Brewski Pending";
 				$scope.isDisabled = true;
 			} else {
-				$scope.brewskiButtonText = "Event Details";
-				$scope.isDisabled = false;
+				$scope.brewskiButtonText = "New Brewski";
+				// $scope.isDisabled = false;
 			}
 		};
+
+		$scope.setEventButton = function(){
+			if(AppFactory.userEvent && AppFactory.userEvent.accepted === false){
+				$scope.eventButton = "Event unaccepted";
+				$scope.eventButtonDisabled = true;
+			} else if (AppFactory.userEvent && AppFactory.userEvent.accepted === true){
+				$scope.eventButton = "Go To Event";
+				$scope.eventButtonDisabled = false;
+				//change event button function
+			} else if (!AppFactory.userEvent){
+				$scope.eventButton = "No Events...";
+			}
+		}
 
 		$scope.brewskiButtonText = "Brewski";// Brewski  or Brewski Pending or Go To Event
 
@@ -73,8 +87,6 @@ angular.module('App.main',[])
 		$scope.showEvent = AppFactory.userEvent ? AppFactory.userEvent.accepted : false;
 
 		console.log(AppFactory.userEvent);
-
-		$scope.pending = false;
 
 		$scope.init = function(){
 			$scope.checkUserEvents();
@@ -91,11 +103,17 @@ angular.module('App.main',[])
 				method: 'GET',
 				url: '/user'
 			}).then(function(success){
+				console.log("inside getUsername, success after GET req: ", success);
 				AppFactory.userId = success.data.id;
+				AppFactory.username = success.data.username;
 			}, function(err){
 				console.log(err, "ERROR: COULD NOT GET USERNAME! INSIDE getUsername");
 			});
 		};
+
+		$scope.pageLoadOrEventPending = true;
+		$scope.eventButton = "checking for event...";
+		$scope.eventButtonDisabled = true;
 
 		$scope.isDisabled = false;
 
@@ -119,11 +137,12 @@ angular.module('App.main',[])
 
 		$scope.brew = function(){
 		  // if (AppFactory.userEvent !== 0) { //if no brewski event hosted/accepted
-
-		  	if(!AppFactory.userEvent){
-
+		  	if(!AppFactory.userEvent || (AppFactory.userEvent && AppFactory.userEvent.accepted === true)){
+		  		//should change events text to not yet accepted;
         $scope.brewskiButtonText = "Brewski Pending";
 		  	$scope.isDisabled = true;
+		  	$scope.eventButton = "Event unaccepted";
+				$scope.eventButtonDisabled = true;
 
 		    $scope.getLocation().then(function(result) {
 		      console.log("result of invite()", result, result.coords.latitude);
@@ -144,10 +163,8 @@ angular.module('App.main',[])
 		      	$scope.setBrewskiButtonTextAndFunction();
 		      });
 		    });
-		   } else if(AppFactory.userEvent && AppFactory.userEvent.accepted === true){
-		   	$scope.goToEvent();
 		   } else {
-		   	console.log("ERROR: INSIDE OF BREW()!");
+		   	console.log("ERROR: INSIDE OF BREW()! AppFactory.userEvent exists && has not been accepted. Aka button hasn't been disabled");
 		   }
 		};
 
@@ -192,8 +209,8 @@ angular.module('App.main',[])
 						method: 'GET',
 						url: '/events/' + event.id,
 					}).then(function(success){
-						AppFactory.userEvent = success.data.results[0];
-						console.log("inside acceptbrewski(). AppFactory.userEvent = ", success.data.results[0]);
+						AppFactory.userEvent = success.data[0];
+						console.log("inside acceptbrewski(). AppFactory.userEvent = ", success.data[0]);
 						$location.path("/event");
 					}, function(err){
 						console.log("GET REQUEST FAILED FOR EVENTS PAGE AFTER PRESSING ACCEPT BREWSKI");
