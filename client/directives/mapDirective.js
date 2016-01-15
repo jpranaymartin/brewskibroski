@@ -1,58 +1,37 @@
 angular.module('App.map',[])
-  .directive("myMaps", function (AppFactory) {
+  .directive("myMaps", function (AppFactory, $timeout) {
     return{
       restrict:'E', //Element Type
       template:'<div></div>', //Defining myApp div
       replace:true, //Allowing replacing
       link: function(scope, element, attributes){
+        $timeout(function(){
+        var startLat;  
+        var startLong;
 
-        // var startLat;
-        // var startLong;
+        if (AppFactory.userEvent.UserId !== AppFactory.userId) {
+          startLat = AppFactory.userEvent.acceptedLat;
+          startLong = AppFactory.userEvent.acceptedLong;
+        } else {
+          startLat = AppFactory.userEvent.ownerLat;
+          startLong = AppFactory.userEvent.ownerLong;
+        };
 
-        // if (AppFactory.userEvent.UserId !== AppFactory.userId) {
-        //   startLat = AppFactory.userEvent.acceptedLat;
-        //   startLong = AppFactory.userEvent.acceptedLong;
-        // } else {
-        //   startLat = AppFactory.userEvent.ownerLat;
-        //   startLong = AppFactory.userEvent.ownerLong;
-        // };
+        var barLat = AppFactory.userEventLat;
+        var barLong = AppFactory.userEventLong;
 
-        // 30 miles
-        // var startLat = 34.052270;
-        // var startLong =  -117.977414;
-        // var barLat = 34.027024;
-        // var barLong = -118.503145;
+        // // 21 miles 
+        // startLat = 34.082937;
+        // startLong =  -118.146935;
+        // barLat = 34.027024;
+        // barLong = -118.503145;
 
-        // 21 miles 
-        // var startLat = 34.082937;
-        // var startLong =  -118.146935;
-        // var barLat = 34.027024;
-        // var barLong = -118.503145;
+        // // 11 miles 
+        // startLat = 34.053716;
+        // startLong =  -118.305778;
+        // barLat = 34.027024;
+        // barLong = -118.503145;
 
-        // 15 miles 
-        // var startLat = 34.056757;
-        // var startLong =  -118.232576;
-        // var barLat = 34.027024;
-        // var barLong = -118.503145;
-
-        // 11 miles 
-        var startLat = 34.053716;
-        var startLong =  -118.305778;
-        var barLat = 34.027024;
-        var barLong = -118.503145;
-
-
-        // 4 miles
-        // var startLat = 34.039599; 
-        // var startLong =  -118.428146;
-        // var barLat = 34.027024;
-        // var barLong = -118.503145;
-
-        // 1.5 miles
-        // var startLat = 34.028277;
-        // var startLong = -118.477491;
-        // var barLat = 34.027024;
-        // var barLong = -118.503145;
 
         var startLatLng = new google.maps.LatLng(startLat, startLong);
         var barLatLng = new google.maps.LatLng(barLat, barLong);
@@ -96,7 +75,9 @@ angular.module('App.map',[])
         var mapZoom;
         var mapDist = distance(startLat, startLong, barLat, barLong, 1);
 
-        if(mapDist > 0 && mapDist < 1.5){
+        if(mapDist > 0 && mapDist < 0.75){
+          mapZoom = 15;
+        } else if(mapDist > 0.75 && mapDist < 1.5){
           mapZoom = 14;
         } else if(mapDist > 1.5 && mapDist < 3){
           mapZoom = 13;
@@ -149,6 +130,8 @@ angular.module('App.map',[])
           map: map,
           title:"Bar is here!"
         });
+          
+        }, 3000);
       }
     };
 });
