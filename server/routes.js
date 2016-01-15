@@ -115,14 +115,14 @@ router.post('/friends', util.checkUser, function(request, response) {
   var friend = request.body.friend;
   console.log("friend: ", friend)
   console.log("request.session.user: ", request.session.user)
-  if (Number(friend) !== request.session.user) {
+
     db.User.find({
       where: {
         username: friend
       }
     }).then(function(foundFriend) {
       console.log("foundFriend: ", foundFriend)
-      if (foundFriend) {
+      if (foundFriend || foundFriend.id !== request.session.user) {
         db.Friend.findOrCreate({
           where: {
             friendId: foundFriend.id,
@@ -150,14 +150,10 @@ router.post('/friends', util.checkUser, function(request, response) {
           }
         });
       } else {
-        console.log("That friend doesn't exist, bromancer")
-        response.sendStatus(404)
+        console.log("That friend doesn't exist, or you are that friend")
+        response.sendStatus(400)
       }
     });
-  } else{
-    console.log("you can't be your own bro, bro")
-    response.sendStatus(406)
-  }
 });
 
 // Check one event
