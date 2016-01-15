@@ -7,7 +7,7 @@ angular.module('App.main',[])
 				url: '/user'
 			}).then(function(success){
 				console.log("ASSS", success);
-				if(success.data.currentEvent !== null || success.data.currentEvent.id !== AppFactory.userEvent.id){
+				if(success.data.currentEvent !== null){
 					console.log("success.data.results.currentEvent: ", success.data.currentEvent);
 					return $http({
 						method: 'GET',
@@ -27,6 +27,8 @@ angular.module('App.main',[])
 				$scope.setEventButton();
 			});
 		};
+
+		//|| success.data.currentEvent.id !== AppFactory.userEvent.id SAVING THIS JUST IN CASE
 
 		$scope.generateBro = function() {
 			var bros = [
@@ -74,6 +76,7 @@ angular.module('App.main',[])
 			} else if (AppFactory.userEvent && AppFactory.userEvent.accepted === true){
 				$scope.eventButton = "Go To Event";
 				$scope.eventButtonDisabled = false;
+				$scope.pageLoadOrEventPending = false;
 				//change event button function
 			} else if (!AppFactory.userEvent){
 				$scope.eventButton = "No Events...";
@@ -143,6 +146,7 @@ angular.module('App.main',[])
 		  	$scope.isDisabled = true;
 		  	$scope.eventButton = "Event unaccepted";
 				$scope.eventButtonDisabled = true;
+				$scope.pageLoadOrEventPending = true;
 
 		    $scope.getLocation().then(function(result) {
 		      console.log("result of invite()", result, result.coords.latitude);
