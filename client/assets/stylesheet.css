@@ -129,6 +129,14 @@ Event View
   background-color: #555B80;
 }
 
+#map-canvas{
+  width: 350px;
+  height: 200px;
+  margin: 20px auto;
+  padding: 10px;
+  position: relative;
+}
+
 /*==============================*\
 Settings Page
 \*==============================*/
