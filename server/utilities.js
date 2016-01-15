@@ -2,7 +2,7 @@
 var session = require('express-session');
 var Yelp = require('yelp');
 var Uber = require('node-uber');
- 
+
 // Uber key
 var uber = new Uber({
   client_id: 's7Z67Tq2-omqdyXmEVMIXdkn_krzD563',
@@ -17,7 +17,7 @@ var yelp = new Yelp({
   consumer_key: "cUM2s97-paI5-BlgOeUqIQ",
   consumer_secret: "tE_ShtbZHaYxEgmcbpfGO3DBpng",
   token: "WQ2Iw9H39t8PV8H-V1UjZreaDniDnztc",
-  token_secret: "szUxF_dCG6v3TZrofbdYaKGzpSc" 
+  token_secret: "szUxF_dCG6v3TZrofbdYaKGzpSc"
 });
 
 // Session Creation
@@ -78,26 +78,28 @@ exports.searchYelpApi = function (request, response, centerLat, centerLong){
   .then(function (data) {
     var address = data.businesses[0].location.display_address;
     address.splice(1,1);
-    response.send( {
+    response.status(200).send( {
         name: data.businesses[0].name,
         address: address,
         location: data.businesses[0].location.coordinate
       });
   })
   .catch(function (err) {
-  response.send(err);
+    console.error(err);
+    response.sendStatus(500)
   });
 }
 
 exports.searchUberApi = function (request, response, startLat, startLong, endLat, endLong){
-  uber.estimates.price({ 
-    start_latitude: startLat, start_longitude: startLong, 
+  uber.estimates.price({
+    start_latitude: startLat, start_longitude: startLong,
     end_latitude: endLat, end_longitude: endLong
   }, function (err, res) {
-    if (err) { 
-      console.error(err); 
+    if (err) {
+      console.error(err);
+      response.sendStatus(500)
     } else {
-      response.send( { 
+      response.status(200).send( {
         uberX: res.prices[0],
         uberXL: res.prices[1],
         uberSELECT: res.prices[3],

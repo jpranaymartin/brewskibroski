@@ -18,6 +18,10 @@ var User = sequelize.define('User', {
   email: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  currentEvent: {
+    type: Sequelize.INTEGER,
+    allowNull: true
   }
 }, {
   timestamps: true
@@ -36,10 +40,8 @@ var Event = sequelize.define('Event', {
     type: Sequelize.STRING,
     allowNull: true
   },
-  active: {
-    type: Sequelize.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
+  message: {
+    type: Sequelize.STRING
   },
   accepted: {
     type: Sequelize.BOOLEAN,
