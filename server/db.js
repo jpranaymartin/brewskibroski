@@ -1,5 +1,6 @@
 // Requirements
 var Sequelize = require('sequelize');
+var url = require('url');
 
 var dbName = "brewskitest1";
 var dbUser = "root";
@@ -7,20 +8,38 @@ var dbPass = "";
 
 var sequelize = null;
 
-if (process.env.DATABASE_URL) {
+// Heroku-ClearDB Code
+if (process.env.CLEARDB_DATABASE_URL) {
   // the application is executed on Heroku ... use the postgres database
-  var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
-  sequelize = new Sequelize(match[5], match[1], match[2], {
-    dialect:  'postgres',
-    protocol: 'postgres',
-    port:     match[4],
-    host:     match[3],
-    logging:  true //false
+  var dbUrl = url.parse(process.env.CLEARDB_DATABASE_URL);
+  sequelize = new Sequelize(dbUrl.pathname.slice(1), dbUrl.auth.split(":")[0],  dbUrl.auth.split(":")[1], {
+    dialect:  'mysql',
+    protocol: 'mysql',
+    host:     dbUrl.hostname,
+    logging:  true
   })
 } else {
   // the application is executed on the local machine ... use mysql
   sequelize = new Sequelize(dbName, dbUser, dbPass);
 }
+
+
+// Heroku Postgres Code - Does NOT create relations!
+
+// if (process.env.DATABASE_URL) {
+//   // the application is executed on Heroku ... use the postgres database
+//   var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
+//   sequelize = new Sequelize(match[5], match[1], match[2], {
+//     dialect:  'postgres',
+//     protocol: 'postgres',
+//     port:     match[4],
+//     host:     match[3],
+//     logging:  true //false
+//   })
+// } else {
+//   // the application is executed on the local machine ... use mysql
+//   sequelize = new Sequelize(dbName, dbUser, dbPass);
+// }
 
 // Sequelize Models
 // based on SQL schema
