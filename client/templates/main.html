@@ -1,32 +1,33 @@
-<div>
+<div> <!--buttons-->
+
 	<div>
 		<button class="button topButton" ui-sref="settings">BREWSKI BROSKI</button>
 	</div>
+
 	<div>
-		<button class="section button" id="brewskiButton" ng-click = "brew()" ng-hide = "isDisabled" >Brewski</button>
+		<button ng-click = "brew()" ng-disabled="isDisabled" ng-class="{section2: true, button2: true, grayButton: isDisabled, brewskiButton: !AppFactory.userEvent, event: App.Factory.userEvent.accepted === true}">{{brewskiButtonText}}</button>
 	</div>
-	<div>
+
 	<div class="section" ng-disabled="true" ng-show="pending">
-		<button class="button" id="grayButton">
-	<div>
-			Brewski Pending
-		</button>
+		<button class="button" id="grayButton">Brewski Pending</button>
 	</div>
+
 	<div>
 		<button  class="button section sectionInvite" id="broskiButton" ng-click = "bro()">Broski</button>
 	</div>
-	<div>
+
+	<!-- <div>
 		<button class="section button brewskiInvite sectionInvite" ng-click = "goToEvent()" ng-show="showEvent">Go To Event</button>
-	</div>
+	</div> -->
 
-	<div>
-		<!-- | filter: {eventType: 1} -->
-			<div  ng-repeat = "brews in events">
+</div>
 
-				<button class="button brewskiInvite sectionInvite" ng-hide = "userEventId" ng-click = "acceptBrewski(brews)">Brewski with {{brews.ownerName + alreadyEvent()}}</button>
-			</div>
-<!-- 		<ul>
-			<li ng-repeat = "bro in brewskisArray | filter: {eventType: 2}">
-				{{bro.ownerName + " says " + "Bro!"}}
-			</li>
-		</ul> -->
+<div> <!--timeline-->
+
+		<div  ng-repeat = "brew in events">
+				<button class="button brewskiInvite sectionInvite" ng-show = "brew.eventType === 1" ng-click = "acceptBrewski(brew)">Brewski with {{brew.ownerName + alreadyEvent()}}</button>
+				<!--change below class from brewskiInvite to broskiInvite-->
+				<button class="button brewskiInvite sectionInvite" ng-show = "brew.eventType === 2">{{brew.ownerName}} says {{brew.message}}</button>
+		</div>
+
+</div>
