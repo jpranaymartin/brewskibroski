@@ -8,33 +8,27 @@ angular.module('App.map',[])
         $timeout(function(){
         var startLat;  
         var startLong;
+        var broLat;
+        var broLong;
 
         if (AppFactory.userEvent.UserId !== AppFactory.userId) {
           startLat = AppFactory.userEvent.acceptedLat;
           startLong = AppFactory.userEvent.acceptedLong;
+          broLat = AppFactory.userEvent.ownerLat;
+          broLong = AppFactory.userEvent.ownerLong;
         } else {
           startLat = AppFactory.userEvent.ownerLat;
           startLong = AppFactory.userEvent.ownerLong;
+          broLat = AppFactory.userEvent.acceptedLat;
+          broLong = AppFactory.userEvent.acceptedLong;
         };
 
         var barLat = AppFactory.userEventLat;
         var barLong = AppFactory.userEventLong;
 
-        // // 21 miles 
-        // startLat = 34.082937;
-        // startLong =  -118.146935;
-        // barLat = 34.027024;
-        // barLong = -118.503145;
-
-        // // 11 miles 
-        // startLat = 34.053716;
-        // startLong =  -118.305778;
-        // barLat = 34.027024;
-        // barLong = -118.503145;
-
-
         var startLatLng = new google.maps.LatLng(startLat, startLong);
         var barLatLng = new google.maps.LatLng(barLat, barLong);
+        var broLatLng = new google.maps.LatLng(broLat, broLong);
 
         // Helper function - find center position between 2 locations
         var getCentralPoints = function(ownerPoints, acceptedPoints, num) {
@@ -68,12 +62,14 @@ angular.module('App.map',[])
         }
 
         // Calculate center point between user location and bar location
-        var mapPoints = getCentralPoints([startLat, startLong],[barLat, barLong], 1);
-        var mapLatLng = new google.maps.LatLng(mapPoints[0].x, mapPoints[0].y);
+        // var mapPoints = getCentralPoints([startLat, startLong],[barLat, barLong], 1);
+        // var mapLatLng = new google.maps.LatLng(mapPoints[0].x, mapPoints[0].y);
+
+        var mapLatLng = new google.maps.LatLng(barLat, barLong);
 
         // Control zooming of map based on distance between user location and bar location
         var mapZoom;
-        var mapDist = distance(startLat, startLong, barLat, barLong, 1);
+        var mapDist = distance(startLat, startLong, broLat, broLong, 1);
 
         if(mapDist > 0 && mapDist < 0.75){
           mapZoom = 15;
@@ -111,7 +107,7 @@ angular.module('App.map',[])
         var mapOptions = {
           center: mapLatLng,
           zoom: mapZoom,
-          mapTypeId: google.maps.MapTypeId.ROADMAP 
+          mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
         var map = new google.maps.Map(document.getElementById(attributes.id),
@@ -125,10 +121,16 @@ angular.module('App.map',[])
           title:"You are here!"
         });
         var centerMarker = new google.maps.Marker({
-          icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
           position: barLatLng,
           map: map,
           title:"Bar is here!"
+        });
+        var broMarker = new google.maps.Marker({
+          icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          position: broLatLng,
+          map: map,
+          title:"Your bro is here!"
         });
           
         }, 3000);

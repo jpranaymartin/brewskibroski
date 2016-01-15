@@ -77,7 +77,9 @@ exports.searchYelpApi = function (request, response, centerLat, centerLong){
   yelp.search({ term: 'bar', ll: cll, limit: 1, sort: 1 })
   .then(function (data) {
     var address = data.businesses[0].location.display_address;
-    address.splice(1,1);
+    if(address.length === 3){
+      address.splice(1,1);
+    }
     response.status(200).send( {
         name: data.businesses[0].name,
         address: address,
