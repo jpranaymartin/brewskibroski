@@ -28,7 +28,9 @@ angular.module('App.event',[])
       .then(function(result){
         $scope.barInfo = result.data;
         $scope.event.endLat = result.data.location.latitude;
+        AppFactory.userEventLat = result.data.location.latitude;
         $scope.event.endLong = result.data.location.longitude;
+        AppFactory.userEventLong = result.data.location.longitude;
         $scope.getUber($scope.event.startLat, $scope.event.startLong, $scope.event.endLat, $scope.event.endLong);
       })
     }
