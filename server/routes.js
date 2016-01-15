@@ -170,7 +170,7 @@ router.get('/events/:id', util.checkUser, function(request, response) {
         type: sequelize.QueryTypes.SELECT
       })
     .then(function(friendList) {
-      if(!!friendList && friendList.length !== 0) {
+      if (!!friendList && friendList.length !== 0) {
         console.log("friendList: ", friendList)
         var friendIds = friendList.map(function(usersFriends) {
 
@@ -181,29 +181,25 @@ router.get('/events/:id', util.checkUser, function(request, response) {
             }
           };
         });
+        friendIds.push({
+          UserId: {
+            $eq: request.session.user
+          }
+        });
         db.Event.findAll({
           where: {
             id: eventId,
             $or: friendIds
           }
         }).then(function(item) {
-          if (item) {
-            var results = item.map(function(item, index) {
-              item.dataValues.username = friendList[index].username;
-              return item
-            })
-            response.status(200).json({
-              results
-            })
-          } else {
-            response.sendStatus(404);
-          };
-        });
+          response.status(200).json(item)
+        })
       } else {
         response.sendStatus(404);
       }
-    });
-});
+    })
+})
+
 
 // Get a list of all events
 router.get('/events', util.checkUser, function(request, response) {
@@ -248,9 +244,7 @@ router.get('/events', util.checkUser, function(request, response) {
             //     return item
             //   }
             // })
-            response.status(200).json({
-              results
-            })
+            response.status(200).json({results})
           } else {
             response.sendStatus(404)
           };
