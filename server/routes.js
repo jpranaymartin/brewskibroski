@@ -239,14 +239,15 @@ router.get('/events', util.checkUser, function(request, response) {
               $gt: timelimit
             }
           }
-        }).then(function(item) {
-          if (item) {
-            var results = item.map(function(item, index) {
-              if(friendList[index]){
-                item.dataValues.username = friendList[index].username;
-                return item
-              }
-            })
+        }).then(function(results) {
+          if (results) {
+            console.log("items: ", results)
+            // var results = item.map(function(item, index) {
+            //   if(friendList[index]){
+            //     item.dataValues.username = friendList[index].username;
+            //     return item
+            //   }
+            // })
             response.status(200).json({
               results
             })
@@ -267,8 +268,6 @@ router.post('/events/:id', util.checkUser, function(request, response) {
   var acceptedAt = Date.now();
   var acceptedLat = request.body.acceptedLat;
   var acceptedLong = request.body.acceptedLong;
-
-
 
   db.Event.findById(id)
     .then(function(acceptedEvent) {
@@ -337,11 +336,15 @@ router.post('/events', util.checkUser, function(request, response) {
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
   var eventType = request.body.eventType;
+  var message = request.body.message || null;
 
   if (UserId !== null || ownerLat !== null || ownerLong !== null) {
 
     var timelimit = new Date();
-    timelimit.setHours(timelimit.getHours() - 1);
+
+    if(Number(eventType) !== Number(2)){
+      timelimit.setHours(timelimit.getHours() - 1);
+    }
 
     db.Event.find({
       where: {
@@ -353,14 +356,14 @@ router.post('/events', util.checkUser, function(request, response) {
       }
     }).then(function(result) {
       if(result === null) {
-        console.log("here1")
         db.Event.create({
           UserId: UserId,
           ownerLat: ownerLat,
-          ownerLong: ownerLong
+          ownerLong: ownerLong,
+          eventType: eventType,
+          message: message
         }).then(function(result){
           if (result.$options.isNewRecord === true) {
-            console.log("here2")
             db.User.find({
               where: {
                 id: request.session.user
@@ -370,16 +373,18 @@ router.post('/events', util.checkUser, function(request, response) {
               result.save()
               console.log('time to turn up, Bro-ntosaurus!')
               response.status(201).send(result);
-              owner.update({
-                currentEvent: result.id
-              })
-              .then(function () {
-                console.log("currentEvent updated for", request.session.user)
-              })
+              if (Number(eventType) === Number(1)) {
+                owner.update({
+                  currentEvent: result.id
+                })
+                .then(function () {
+                  console.log("Event recognized as brewski")
+                })
+              }
             })
           } else {
-            console.log("Event already created, Broham")
-            response.sendStatus(409)
+            console.log("That record already exists")
+            response.sendStatus(202)
           }
         });
       } else {
