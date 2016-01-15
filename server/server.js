@@ -19,7 +19,7 @@ app.use(session({
 }));
 
 // Set what we are listening on.
-app.set("port", 8000);
+app.set("port", process.env.PORT || 8000);
 
 // Logging and parsing
 app.use(parser.json());
