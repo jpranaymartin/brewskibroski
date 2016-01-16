@@ -1,27 +1,27 @@
 angular.module('App.main',[])
-	.controller('MainController', function($http, $scope, $q, $window, $location, $rootScope, AppFactory){
+	.controller('MainController', function($http, $scope, $q, $window, $location, $rootScope, AppFactory, $timeout){
 
 		$scope.checkUserEvents = function(){
 			return $http({
 				method: 'GET',
 				url: '/user'
 			}).then(function(success){
-				console.log("ASSS", success);
+				// console.log("ASSS", success);
 				if(success.data.currentEvent !== null){
-					console.log("success.data.results.currentEvent: ", success.data.currentEvent);
+					// console.log("success.data.results.currentEvent: ", success.data.currentEvent);
 					return $http({
 						method: 'GET',
 						url: '/events/' + success.data.currentEvent
 					}).then(function(success){
-						console.log("Inside 2nd GET request: success: ",success);
+						// console.log("Inside 2nd GET request: success: ",success);
 						AppFactory.userEvent = success.data[0];
-						console.log("AppFactory.userEvent:", AppFactory.userEvent);
+						// console.log("AppFactory.userEvent:", AppFactory.userEvent);
 					}, function(err){
-						console.log("error inside 2nd get request of checkUserEvents");
+						// console.log("error inside 2nd get request of checkUserEvents");
 					});
 				}
 			}, function(err){
-				console.log("ERROR: Inside 1st GET request of checkUserEvents");
+				// console.log("ERROR: Inside 1st GET request of checkUserEvents");
 			}).finally(function(){
 				$scope.setBrewskiButtonTextAndFunction();
 				$scope.setEventButton();
@@ -49,11 +49,11 @@ angular.module('App.main',[])
 
 
 			var key = Math.floor(Math.random() * bros.length);
-			console.log("key", key);
+			// console.log("key", key);
 
-			console.log("inside $scope.generateBro(BEFORE):", $scope.broMessage);
+			// console.log("inside $scope.generateBro(BEFORE):", $scope.broMessage);
 			$scope.broMessage = bros[key];
-			console.log("inside $scope.generateBro(AFTER):", $scope.broMessage);
+			// console.log("inside $scope.generateBro(AFTER):", $scope.broMessage);
 		};
 
 		$scope.setBrewskiButtonTextAndFunction = function(){
@@ -94,7 +94,8 @@ angular.module('App.main',[])
 		$scope.init = function(){
 			$scope.checkUserEvents();
 			// $scope.setBrewskiButtonTextAndFunction();
-			$scope.getLocation();
+			// $scope.getLocation();
+			$scope.setLocation();
 			$scope.checkEvents();
 			$scope.getUsername();
 			console.log("AppFactory.userEvent", AppFactory.userEvent);
@@ -148,14 +149,14 @@ angular.module('App.main',[])
 				$scope.eventButtonDisabled = true;
 				$scope.pageLoadOrEventPending = true;
 
-		    $scope.getLocation().then(function(result) {
-		      console.log("result of invite()", result, result.coords.latitude);
+		    // $scope.getLocation().then(function(result) {
+		    //   console.log("result of invite()", result, result.coords.latitude);
 		      $http({
 		        method: 'POST',
 		        url: '/events',
 		        data: {
-		          ownerLat: result.coords.latitude,
-		          ownerLong: result.coords.longitude,
+		          ownerLat: AppFactory.locationLat,
+		          ownerLong: AppFactory.locationLong,
 		          eventType: 1
 		        }
 		      }).then(function(success) {
@@ -166,7 +167,7 @@ angular.module('App.main',[])
 		      }).finally(function(){
 		      	$scope.setBrewskiButtonTextAndFunction();
 		      });
-		    });
+		    // });
 		   } else {
 		   	console.log("ERROR: INSIDE OF BREW()! AppFactory.userEvent exists && has not been accepted. Aka button hasn't been disabled");
 		   }
@@ -196,15 +197,15 @@ angular.module('App.main',[])
 
 			console.log("acceptBrewski() beginning");
 
-			$scope.getLocation().then(function(success){
+			// $scope.getLocation().then(function(success){
 
 			$http({
 				method: 'POST',
 				url: '/events/' + event.id,
 				data: {
 					id: event.id,
-					acceptedLat: success.coords.latitude,
-					acceptedLong: success.coords.longitude
+					acceptedLat: AppFactory.locationLat,
+					acceptedLong: AppFactory.locationLong
 				}
 			}).then(function(success){
 					console.log(success);
@@ -222,16 +223,18 @@ angular.module('App.main',[])
 				}, function(err){
 					console.log("INSIDE BAD POST", err);
 				});
-			},function(err){
-				alert("Stop playing a game of Marco Brolo. We need your location!");
-			});
+			// },function(err){
+			// 	alert("Stop playing a game of Marco Brolo. We need your location!");
+			// });
 
 		};
 
 		$scope.bro = function(){
 			$scope.generateBro();
+      $scope.broTimeout();
 
 			console.log("inside $scope.bro, scope.broMessage is:", $scope.broMessage);
+
 
 			return $http({
 				method: 'POST',
@@ -260,11 +263,30 @@ angular.module('App.main',[])
 					deferred.reject(err);
 				});
 			}
-			// console.log("deferred.promise", deferred.promise);
+			// console.log("GETTING LOCATION deferred.promise", deferred.promise);
 			return deferred.promise;
 		};
 
+    $scope.setLocation = function(){
+      $scope.getLocation().then(function(result){
+        AppFactory.locationLat = result.coords.latitude;
+        AppFactory.locationLong = result.coords.longitude;
+        console.log("SAVED LONG", AppFactory.locationLong, "LAT", AppFactory.locationLat);
+      });
+    };
 
+    $scope.broNotification = false;
+
+    $scope.broTimeout = function(){
+      $scope.broNotification = true;
+      if(noteTimeout){
+        $timeout.cancel(noteTimeout);
+        $scope.broNotification = false;
+      }
+      var noteTimeout = $timeout(function(){
+        $scope.broNotification = false;
+      }, 1280);
+    };
 
 		$scope.init();
 

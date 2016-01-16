@@ -8,9 +8,10 @@ body{
   margin: 0;
   padding: 0;
   border: none;
+  width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  background-color: #2C2D39;
+  background-color: #3a2a67;
   text-align: center;
   text-decoration: none !important;
   text-transform: uppercase;
@@ -28,6 +29,7 @@ body{
   display: flex;
   width: 100%;
   height: 72px;
+  /*min-height: 72px;*/
   align-items: center;
   justify-content: center;
 }
@@ -41,12 +43,18 @@ body{
 Login View
 \*==============================*/
 
+.logo-background {
+  background-color: #514080;
+}
+
 ::-webkit-input-placeholder{
   size: 30px;
+  color: white;
 }
 
 :placeholder-shown {
   font-size: inherit;
+  color: white;
 }
 
 input, select, textarea, .button {
@@ -55,6 +63,7 @@ input, select, textarea, .button {
   font-family: inherit;
   font-size: inherit;
   outline: none;
+  color: white;
 }
 
 *:focus {
@@ -72,19 +81,31 @@ input, select, textarea, .button {
   height: 100%;
   text-align: center;
   padding: 0px;
+  margin: 0px;
   border: none;
+  border-width: 0;
   font-family: "Dosis", sans-serif;
 }
 
 #loginButton{
-   background-color: #1AA35F;
+   background-color: #1CB1AD;
 }
 
 #signupButton{
-  background-color: #4A87C8;
-  height: 72px;
+  background-color: #1AA35F;
 }
 
+.username {
+  background-color: #3b55a3;
+}
+
+.password {
+  background-color: #4A87C8;
+}
+
+.email {
+  background-color: #1d84aa;
+}
 /*==============================*\
 Signup View
 \*==============================*/
@@ -108,28 +129,37 @@ Main View
 }
 
 .brewskiButton{
-  background-color: #FC9C48;
+  background-color: #fdc656;
 }
 
 .grayButton{
- background-color: #D3D3D3;
+ background-color: #ca6634;
 }
 
 #broskiButton{
-  background-color: #005D5B;
+  background-color: #fc9c48;
 }
 
 .greenButton{
-  background-color: green;
+  background-color: #1AA35F;
 }
 
-.brewskiInvite{
- background-color: #FEC417;
+.invite-row:nth-child(even) > .section-small > .brewskiInvite {
+  background-color: #9e2f22;
 }
 
-.broskiInvite{
- background-color: purple;
+.invite-row:nth-child(odd) > .section-small > .brewskiInvite {
+  background-color: #87271d;
 }
+
+.invite-row:nth-child(even) > .section-small > .broskiInvite {
+  background-color: #b54432;
+}
+
+.invite-row:nth-child(odd) > .section-small > .broskiInvite {
+  background-color: #a13c2d;
+}
+
 
 /*==============================*\
 Event View
@@ -184,7 +214,54 @@ Misc
   background-color: green;
 }
 
-.error {
-  background-color: #B80000;
+.error, .logout {
+  background-color: #d63c3c;
 }
 
+
+/*==============================*\
+Notifications
+\*==============================*/
+
+/*  WORKS!
+.notification {
+  position: fixed;
+  bottom: -60px;
+  height: 60px;
+  width: 100%;
+  background-color: red;
+}
+
+.animate {
+  animation: notificationChanger 3s 1;
+}
+
+@-webkit-keyframes notificationChanger {
+  0% {bottom: -60px;}
+  50% {bottom: 0px;}
+  100% {bottom: -60px;}
+}
+
+@keyframes notificationChanger {
+  0% {bottom: -60px;}
+  50% {bottom: 0px;}
+  100% {bottom: -60px;}
+}*/
+
+.notification {
+  position: fixed;
+  bottom: -48px;
+  height: 48px;
+  width: 100%;
+  max-width: 720px;
+  background-color: #d63c3c;
+  transition:bottom linear 0.5s;
+  transform: translate(-50%, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification.animate {
+  bottom: 0;
+}

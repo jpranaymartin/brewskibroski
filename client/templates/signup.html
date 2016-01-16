@@ -2,25 +2,27 @@
 
 	<form name="signupForm" ng-submit = "signup()" novalidate>
 
-		<input class="section" type = "text" autocomplete="off" name="newusernamename" placeholder="username" ng-model="userS" required>
+		<input class="section username" type = "text" autocomplete="off" name="newusernamename" placeholder="username" ng-model="userS" required>
 
 		<div ng-messages="signupForm.newusernamename.$error" ng-if="signupForm.newusernamename.$dirty">
 			<div class=" section-small error" ng-message="required"><p>name, bro!<p></div>
 		</div>
 
-		<input class="section" type="password" autocomplete="off" name="passwordname" placeholder="password" ng-model="passS" required>
+		<input class="section password" type="password" autocomplete="off" name="passwordname" placeholder="password" ng-model="passS" required>
 
 		<div ng-messages="signupForm.passwordname.$error" ng-if="signupForm.passwordname.$dirty">
 			<div class="section-small error" ng-message="required"><p>password, bro!<p></div>
 		</div>
 
-		<input class="section" type="email" autocomplete="off" name="emailname" placeholder="email" ng-model="email" required>
+		<input class="section  email" type="email" autocomplete="off" name="emailname" placeholder="email" ng-model="email" required>
 
 		<div ng-messages="signupForm.emailname.$error" ng-if="signupForm.emailname.$dirty">
 			<div class="section-small error" ng-message="required"><p>contact, bro!<p></div>
 		</div>
 
+    <div class="section">
 			<button class="button" id="signupButton" type="submit" ng-disabled="signupForm.$invalid">Create Account</button>
+    </div>
 
 		<div class="section" id="loginButton">
 		  <p ui-sref="login">GO BACK</p>
