@@ -34,7 +34,7 @@ angular.module('App.main',[])
 			var bros = [
 			  "bro!",
 			  "brohemith!",
-			  "broseph!",
+			  "Broseph!",
 			  "Lebro James!",
 			  "Brohammad Ali!",
 			  "bromeo!",
@@ -58,7 +58,7 @@ angular.module('App.main',[])
 
 		$scope.setBrewskiButtonTextAndFunction = function(){
 			if(!AppFactory.userEvent){
-				$scope.brewskiButtonText = "Brewski";
+				$scope.brewskiButtonText = "Send Brewski";
 				$scope.isDisabled = false;
 			} else if (AppFactory.userEvent && AppFactory.userEvent.accepted === false){
 				$scope.brewskiButtonText = "Brewski Pending";
@@ -79,7 +79,7 @@ angular.module('App.main',[])
 				$scope.pageLoadOrEventPending = false;
 				//change event button function
 			} else if (!AppFactory.userEvent){
-				$scope.eventButton = "No Events...";
+				$scope.eventButton = "No Brewskis...";
 			}
 		}
 

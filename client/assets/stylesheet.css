@@ -2,49 +2,40 @@
 General style
 \*==============================*/
 
+@import url(https://fonts.googleapis.com/css?family=Dosis:600);
+
 body{
   margin: 0;
   padding: 0;
   border: none;
+  max-width: 720px;
+  margin: 0 auto;
   background-color: #2C2D39;
   text-align: center;
   text-decoration: none !important;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  text-transform: uppercase;
+  font-family: "Dosis", sans-serif;
   font-weight: 100;
-  font-size: 40px;
+  font-size: 24px;
   color: white;
 }
 
-.section{
-  display: block;
-  width: 100%;
-  height: 64px;
-  float: right;
-}
-
-.section2 {
-  display: block;
-  width: 100%;
-  height: 64px;
-  float: right;
-}
-
-.button2 {
-  width: 100%;
-  height: 100%;
-  font-size: 40px;
-  color: white;
-  border: none;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-}
-
-.section p{
+.section, .section-small {
   position: relative;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  top: 50%;
-  transform: translateY(-50%);
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: flex;
+  width: 100%;
+  height: 72px;
+  align-items: center;
+  justify-content: center;
 }
+
+.section-small {
+  height: 48px;
+}
+
 
 /*==============================*\
 Login View
@@ -55,13 +46,15 @@ Login View
 }
 
 :placeholder-shown {
-  font-size: 40px;
+  font-size: inherit;
 }
 
-input, select, textarea{
-  font-size: 40px;
+input, select, textarea, .button {
+  text-transform: inherit;
+  text-align: inherit;
+  font-family: inherit;
+  font-size: inherit;
   outline: none;
-  text-align: center;
 }
 
 *:focus {
@@ -72,13 +65,15 @@ input, select, textarea{
   background-color: black;
 }
 
-.button{
+.button {
   width: 100%;
-  height: 100%;
-  font-size: 40px;
+  font-size: inherit;
   color: white;
+  height: 100%;
+  text-align: center;
+  padding: 0px;
   border: none;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Dosis", sans-serif;
 }
 
 #loginButton{
@@ -87,8 +82,8 @@ input, select, textarea{
 
 #signupButton{
   background-color: #4A87C8;
+  height: 72px;
 }
-
 
 /*==============================*\
 Signup View
@@ -101,6 +96,12 @@ Signup View
 /*==============================*\
 Main View
 \*==============================*/
+
+#logo{
+  max-height: 48px;
+  max-width: 80%;
+  margin: auto;
+}
 
 .topButton{
   background-color: #2C2D39;
@@ -126,17 +127,18 @@ Main View
  background-color: #FEC417;
 }
 
-.sectionInvite{
-  height: 100%;
-  border-bottom: 1px solid #2C2D39;
+.broskiInvite{
+ background-color: purple;
 }
 
 /*==============================*\
 Event View
 \*==============================*/
+
 #map{
   clear:both;
 }
+
 .eventInfo{
   min-height: 64px;
 }
@@ -150,18 +152,16 @@ Event View
 }
 
 #map-canvas{
-  width: 350px;
-  height: 200px;
-  margin: 20px auto;
-  padding: 10px;
+  width: 100%;
+  height: 225px;
+  margin: auto;
+  padding: 0;
   position: relative;
 }
 
 /*==============================*\
 Settings Page
 \*==============================*/
-
-
 
 #addFriend{
   background-color: #D5513D;
@@ -184,7 +184,7 @@ Misc
   background-color: green;
 }
 
-.error{
-   background-color: #B80000;
+.error {
+  background-color: #B80000;
 }
 

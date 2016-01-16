@@ -1,17 +1,24 @@
-<div>
-  <button class="button topButton" ui-sref="main">BREWSKI BROSKI</button>
+<div class="section">
+  <img id="logo" ui-sref="main" src="/assets/bblogo.png">
+</div>
 
-  <div>Logged in as {{username}}</div>
+  <div class="section-small">
+    <p>Logged in as {{username}}</p>
+  </div>
 
 	<form>
 			<input class="section" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
 	</form>
-	<button class="button" id="addFriend" ng-click="addFriend()">Add Friend</button>
 
-  <div class="friends" ng-repeat="friend in friends">
-    {{friend.username}}
+  <div class="section">
+	  <button class="button" id="addFriend" ng-click="addFriend()">Add Friend</button>
   </div>
 
-	<button class="button error" ng-click="logout()">Logout</button>
+  <div class="section-small friends" ng-repeat="friend in friends">
+    <p>{{friend.username}}</p>
+  </div>
+<div class="section-small">
+	 <button class="button error" ng-click="logout()">Logout</button>
+</div>
 
 </div>

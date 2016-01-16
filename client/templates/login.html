@@ -4,19 +4,21 @@
     <input class="section" type="text" autocomplete="off" name="usernamename" placeholder="username" ng-model="user" required>
 
     <div ng-messages="loginForm.usernamename.$error" ng-if="loginForm.usernamename.$dirty">
-			<div class="section error" ng-message="required"><p>Username is required</p></div>
+			<div class="section-small error" ng-message="required">Name, Bro!</div>
 		</div>
 
-		<input class="section" type="text" autocomplete="off" name="passwordname"placeholder="password" ng-model = "pass" required>
+		<input class="section" type="password" autocomplete="off" name="passwordname"placeholder="password" ng-model = "pass" required>
 
 		<div ng-messages = "loginForm.passwordname.$error" ng-if="loginForm.passwordname.$dirty">
-			<div class=" section error" ng-message="required"><p>Password is required<p></div>
+			<div class="section-small error" ng-message="required"><p>Password, Bro!<p></div>
 		</div>
 
-    <button class="button" id="loginButton" type="submit" ng-disabled="loginForm.$invalid">LOGIN</button>
+    <div class="section">
+      <button class="button" id="loginButton" type="submit" ng-disabled="loginForm.$invalid">LOGIN</button>
+    </div>
 
-    <div class="section" id="signupButton">
-	    <p ui-sref="signup">SIGNUP</p>
+    <div class="section">
+	    <button class="button" id="signupButton" ui-sref="signup">SIGNUP</button>
     </div>
 
   </form>
