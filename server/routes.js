@@ -368,7 +368,6 @@ router.post('/events', util.checkUser, function(request, response) {
   } else {
     console.log("Bro, some or all your incoming data is null, bro")
     response.sendStatus(400)
-    response.end()
   }
 });
 
