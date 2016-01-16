@@ -1,4 +1,4 @@
-<div class="section">
+<div class="section logo-background">
   <img id="logo" ui-sref="settings" src="/assets/bblogo.png">
 </div>
 
@@ -9,14 +9,28 @@
 <div class="section">
   <button class="button" id="broskiButton" ng-click="bro()">Send Broski</button>
 </div>
+
 <div class="section-small">
   <button ng-click="goToEvent()" ng-disabled="eventButtonDisabled" ng-class="{button: true, grayButton: pageLoadOrEventPending, greenButton: !pageLoadOrEventPending}">{{eventButton}}</button>
 </div>
 
-<div ng-repeat="brew in events">
+<div ng-repeat="brew in events" class="invite-row">
   <div class="section-small">
-    <button ng-class="{button: true, brewskiInvite: brew.eventType === 1}" ng-show="brew.eventType === 1" ng-click="acceptBrewski(brew)">Brewski with {{brew.ownerName}}</button>
+    <button ng-class="{button: true, brewskiInvite: brew.eventType === 1}" ng-if="brew.eventType === 1" ng-click="acceptBrewski(brew)">Brewski with {{brew.ownerName}}</button>
 
-    <button ng-class="{button: true, broskiInvite: brew.eventType === 2}" ng-show="brew.eventType === 2">{{brew.ownerName}} says {{brew.message}}</button>
+    <button ng-class="{button: true, broskiInvite: brew.eventType === 2}" ng-if="brew.eventType === 2">{{brew.ownerName}} says {{brew.message}}</button>
   </div>
 </div>
+
+
+<div class="section-small">
+  <div ng-class="{notification: true, animate: broNotification}">
+    <span><strong>"{{broMessage}}"</strong></span>
+  </div>
+</div>
+
+
+<!-- ng-class="{notification: true, animate: broNotifcation}"
+
+ng-show="broNotification"
+-->

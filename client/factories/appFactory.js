@@ -6,11 +6,15 @@ angular.module('App')
     var userId = 0;
     var username = "";
 
+    var locationLat = 0;
+    var locationLong = 0;
 
     return {
       userEvent : userEvent,
       userId: userId,
-      username: username
+      username: username,
+      locationLat: locationLat,
+      locationLong: locationLong
     };
 
 	});
