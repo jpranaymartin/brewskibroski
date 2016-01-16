@@ -43,7 +43,7 @@ router.post('/signup', function(request, response) {
       }
     }).spread(function(result, created) {
       if (created === true) {
-        console.log('You\'re now a Bro, bro!')
+        console.log('Account added.')
         util.createSession(request, response, result.dataValues.id);
       } else {
         var dirname = __dirname;
@@ -62,7 +62,6 @@ router.post('/login', function(request, response) {
   var password = request.body.password;
 
   console.log('Attempted login username: ' + request.body.username);
-  console.log('Attempted login password: ' + request.body.password);
 
   db.User.find({
     where: {
@@ -111,17 +110,15 @@ router.get('/friends', util.checkUser, function(request, response) {
 
 // Add a friend to current user
 router.post('/friends', util.checkUser, function(request, response) {
-  console.log("request.body: ", request.body)
   var friend = request.body.friend;
-  console.log("friend: ", friend)
-  console.log("request.session.user: ", request.session.user)
+  console.log("Friend to add: ", friend)
+  console.log("Current user: ", request.session.user)
 
     db.User.find({
       where: {
         username: friend
       }
     }).then(function(foundFriend) {
-      console.log("foundFriend: ", foundFriend)
       if (foundFriend || foundFriend.id !== request.session.user) {
         db.Friend.findOrCreate({
           where: {
@@ -159,7 +156,6 @@ router.post('/friends', util.checkUser, function(request, response) {
 // Check one event
 router.get('/events/:id', util.checkUser, function(request, response) {
   var eventId = request.params.id;
-  console.log("eventId", eventId);
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
         replacements: [request.session.user],
@@ -167,10 +163,7 @@ router.get('/events/:id', util.checkUser, function(request, response) {
       })
     .then(function(friendList) {
       if (!!friendList && friendList.length !== 0) {
-        console.log("friendList: ", friendList)
         var friendIds = friendList.map(function(usersFriends) {
-
-          console.log("usersFriends: ", usersFriends.id)
           return {
             UserId: {
               $eq: usersFriends.id
@@ -205,11 +198,9 @@ router.get('/events', util.checkUser, function(request, response) {
         type: sequelize.QueryTypes.SELECT
       })
     .then(function(friendList) {
-      console.log("friendList:", friendList);
       if(!!friendList && friendList.length !== 0) {
         var friendIds = friendList.map(function(usersFriends) {
 
-          console.log("usersFriends: ", usersFriends.id)
           return {
             UserId: {
               $eq: usersFriends.id
@@ -218,10 +209,7 @@ router.get('/events', util.checkUser, function(request, response) {
         });
 
         var timelimit = new Date();
-        console.log(timelimit);
-
         timelimit.setHours(timelimit.getHours() - 1);
-        console.log(timelimit);
 
         db.Event.findAll({
           where: {
@@ -233,7 +221,6 @@ router.get('/events', util.checkUser, function(request, response) {
           }
         }).then(function(results) {
           if (results) {
-            console.log("items: ", results)
             // var results = item.map(function(item, index) {
             //   if(friendList[index]){
             //     item.dataValues.username = friendList[index].username;
@@ -278,8 +265,6 @@ router.post('/events/:id', util.checkUser, function(request, response) {
             var centralLatLong;
             centralLatLong = util.getCentralPoints(ownerPoints,
               acceptedPoints, 1)
-            console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
-              null, "\t"));
             acceptedEvent.acceptedName = acceptor.username;
             acceptedEvent.acceptedId = request.session.user; // TO TEST
             acceptedEvent.acceptedLat = acceptedLat;
@@ -295,10 +280,8 @@ router.post('/events/:id', util.checkUser, function(request, response) {
 
             db.User.findById(request.session.user)
             .then(function (currentUser) {
-              console.log("currentUser")
               db.Event.findById(currentUser.currentEvent)
               .then(function (currentEvent) {
-                console.log("currentEvent")
                 currentEvent.update({
                   accepted: true
                 })
@@ -310,7 +293,7 @@ router.post('/events/:id', util.checkUser, function(request, response) {
                 currentEvent: acceptedEvent.id
               })
               .then(function () {
-                console.log("currentEvent updated for", request.session.user)
+                console.log("currentEvent updated for userid", request.session.user)
               })
           })
       } else {
@@ -396,7 +379,6 @@ router.get('/user', util.checkUser, function (request, response) {
       id: request.session.user
     }
   }).then(function(result){
-    console.log("/user db search result:", result);
     var user = {
       id: result.id,
       username: result.username,

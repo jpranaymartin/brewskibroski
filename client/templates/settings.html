@@ -2,12 +2,12 @@
   <img id="logo" ui-sref="main" src="/assets/bblogo.png">
 </div>
 
-  <div class="section-small">
-    <p>Logged in as {{username}}</p>
+  <div class="section-small loggedInUser">
+    <p>Logged in as <strong>{{username}}</strong></p>
   </div>
 
 	<form>
-			<input class="section" ng-keydown = "$event.which === 13 && addFriend()" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
+			<input class="section friendSearch" ng-keydown = "$event.which === 13 && addFriend()" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
 	</form>
 
   <div class="section">

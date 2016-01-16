@@ -143,14 +143,15 @@ angular.module('App.main',[])
 		  // if (AppFactory.userEvent !== 0) { //if no brewski event hosted/accepted
 		  	if(!AppFactory.userEvent || (AppFactory.userEvent && AppFactory.userEvent.accepted === true)){
 		  		//should change events text to not yet accepted;
-        $scope.brewskiButtonText = "Brewski Pending";
-		  	$scope.isDisabled = true;
-		  	$scope.eventButton = "Event unaccepted";
-				$scope.eventButtonDisabled = true;
-				$scope.pageLoadOrEventPending = true;
+          $scope.brewskiButtonText = "Brewski Pending";
+  		  	$scope.isDisabled = true;
+  		  	$scope.eventButton = "Event unaccepted";
+  				$scope.eventButtonDisabled = true;
+  				$scope.pageLoadOrEventPending = true;
+          // $scope.brewTimeout();
 
-		    // $scope.getLocation().then(function(result) {
-		    //   console.log("result of invite()", result, result.coords.latitude);
+  		    // $scope.getLocation().then(function(result) {
+  		    //   console.log("result of invite()", result, result.coords.latitude);
 		      $http({
 		        method: 'POST',
 		        url: '/events',
@@ -285,6 +286,19 @@ angular.module('App.main',[])
       }
       var noteTimeout = $timeout(function(){
         $scope.broNotification = false;
+      }, 1280);
+    };
+
+    $scope.brewNotification = false;
+
+    $scope.brewTimeout = function(){
+      $scope.brewNotification = true;
+      if(noteTimeout){
+        $timeout.cancel(noteTimeout);
+        $scope.brewNotification = false;
+      }
+      var noteTimeout = $timeout(function(){
+        $scope.brewNotification = false;
       }, 1280);
     };
 

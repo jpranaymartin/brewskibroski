@@ -40,9 +40,6 @@ var isLoggedOut = function(request) {
 
 // Reroute based on Auth status
 exports.checkUser = function(request, response, next) {
-  console.log("Request session: ", JSON.stringify(request.session, null, "\t"));
-  console.log("Request session user.id: " + request.session.user);
-
   if (isLoggedOut(request)) {
     console.log('Not logged in, redirecting to auth');
     response.redirect('/login')
