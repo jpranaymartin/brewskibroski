@@ -148,7 +148,7 @@ angular.module('App.main',[])
   		  	$scope.eventButton = "Event unaccepted";
   				$scope.eventButtonDisabled = true;
   				$scope.pageLoadOrEventPending = true;
-          // $scope.brewTimeout();
+          $scope.brewTimeout();
 
   		    // $scope.getLocation().then(function(result) {
   		    //   console.log("result of invite()", result, result.coords.latitude);

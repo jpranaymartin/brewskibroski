@@ -325,7 +325,8 @@ router.post('/events', util.checkUser, function(request, response) {
         createdAt: {
           $gt: timelimit
         },
-        accepted: false
+        accepted: false,
+        eventType: 1
       }
     }).then(function(result) {
       if(result === null) {
