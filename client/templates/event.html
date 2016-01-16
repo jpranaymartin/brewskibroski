@@ -14,9 +14,13 @@
 
 <span ng-show="!test.hidden">
   <div class="eventInfo sectionInvite" id="eventLocation">
-    {{ event.ownerName }} and {{ event.acceptedName }} gonna {{ event.party }} at <br> {{ barInfo.name }} <br> {{ barInfo.address[0] }}, {{ barInfo.address[1] }}
+    <div>
+    <strong>{{ event.ownerName }}</strong> and <strong>{{ event.acceptedName }}</strong> gonna {{ event.party }} at <br> <strong>{{ barInfo.name }}</strong> <br> {{ barInfo.address[0] }}, {{ barInfo.address[1] }}
+  </div>
   </div>
   <div class="eventInfo sectionInvite" id="eventUber">
-    Just shell out {{uber.uberX.estimate}} for an {{uber.uberX.display_name}} <br> to get there and you'll be popping in no time
+    <div>
+    Just shell out <strong>{{uber.uberX.estimate}}</strong> for an <strong>{{uber.uberX.display_name}}</strong> <br> to get there and you'll be popping in no time
+  </div>
   </div>
 </span>

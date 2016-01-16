@@ -87,15 +87,15 @@ input, select, textarea, .button {
   font-family: "Dosis", sans-serif;
 }
 
-#loginButton{
+#loginButton, .loggedInUser{
    background-color: #1CB1AD;
 }
 
-#signupButton{
+#signupButton, #addFriend{
   background-color: #1AA35F;
 }
 
-.username {
+.username, .friendSearch {
   background-color: #3b55a3;
 }
 
@@ -104,7 +104,7 @@ input, select, textarea, .button {
 }
 
 .email {
-  background-color: #1d84aa;
+  background-color: #4570b4;
 }
 /*==============================*\
 Signup View
@@ -174,11 +174,12 @@ Event View
 }
 
 #eventLocation{
-  background-color: #FEC417;
+  /*background-color: #FEC417;*/
+  background-color: #fc9c48;
 }
 
 #eventUber{
-  background-color: #555B80;
+  background-color: #3b55a3;
 }
 
 #map-canvas{
@@ -189,17 +190,24 @@ Event View
   position: relative;
 }
 
+.eventInfo > div {
+  padding: 16px;
+}
+
 /*==============================*\
 Settings Page
 \*==============================*/
 
-#addFriend{
+/*#addFriend{
   background-color: #D5513D;
+}*/
+
+.friends:nth-child(even){
+  background-color: #4A87C8;
 }
 
-.friends{
-  background-color: #1CB1AD;
-  border-bottom: 1px solid #2C2D39;
+.friends:nth-child(odd){
+  background-color: #4570b4;
 }
 
 #logoutButton{
