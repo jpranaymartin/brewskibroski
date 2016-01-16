@@ -7,7 +7,7 @@
   </div>
 
 	<form>
-			<input class="section" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
+			<input class="section" ng-keydown = "$event.which === 13 && addFriend()" placeholder = "Search for Friends" autocomplete="off" ng-model="potentialFriend" required>
 	</form>
 
   <div class="section">

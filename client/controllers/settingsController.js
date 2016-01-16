@@ -33,7 +33,9 @@ angular.module('App.settings',[])
       $scope.getFriends();
     }, function(err){
       console.log(err);
-    })
+    }).finally(function(){
+      $scope.potentialFriend = "";
+    });
   };
 
   $scope.getFriends = function(){
