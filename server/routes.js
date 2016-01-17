@@ -99,35 +99,51 @@ router.get('/friends', util.checkUser, function(request, response) {
 
 
 
-  // db.Friend.findAll({
-  //   where: {
-  //     UserId: request.session.user
-  //   }
-  // }).then(function(friendList){
-  //   var friendIds = friendList.map(function(friendConn){
-  //     return {
-  //       UserId: friendConn.friendId
-  //     }
-  //   });
-  // });
-
-
-
-
-
-
-
-  seq.query(
-      'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
-        replacements: [request.session.user],
-        type: sequelize.QueryTypes.SELECT
-      })
-    .then(function(friends) {
-      console.log("LINE 126: ", friends);
-      response.status(200).json({
-        friends
+  db.Friend.findAll({
+    where: {
+      UserId: request.session.user
+    }
+  }).then(function(friendList){
+    if(friendList && friendList.length > 0) {
+      var friendIds = friendList.map(function(friendConn){
+        return {
+          id: friendConn.friendId
+        }
       });
-    });
+
+      db.User.findAll({
+        where: {
+          $or: friendIds
+        }
+      }).then(function(friends){
+        var friends = friends.map(function(friend){
+          return {id: friend.id, username: friend.username};
+        });
+        response.status(200).json({ friends });
+      });
+    } else {
+      console.log("No Friends found for ", request.session.user);
+      response.sendStatus(404)
+    }
+  });
+
+
+
+
+
+
+
+  // seq.query(
+  //     'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
+  //       replacements: [request.session.user],
+  //       type: sequelize.QueryTypes.SELECT
+  //     })
+  //   .then(function(friends) {
+  //     console.log("LINE 126: ", friends);
+  //     response.status(200).json({
+  //       friends
+  //     });
+  //   });
 });
 
 // Add a friend to current user
@@ -143,7 +159,7 @@ router.post('/friends', util.checkUser, function(request, response) {
     }).then(function(foundFriend) {
       if (foundFriend || foundFriend.id !== request.session.user) {
 
-        db.Friend.find({
+        db.Friend.findOne({
           where:{
             $or: [
               {
