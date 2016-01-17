@@ -120,32 +120,85 @@ router.post('/friends', util.checkUser, function(request, response) {
       }
     }).then(function(foundFriend) {
       if (foundFriend || foundFriend.id !== request.session.user) {
-        db.Friend.findOrCreate({
-          where: {
-            friendId: foundFriend.id,
-            UserId: request.session.user
-          }
-        }).spread(function(result) {
-          if (result.$options.isNewRecord === true) {
-            db.Friend.findOrCreate({
-              where: {
+
+        db.Friend.find({
+          where:{
+            $or: [
+              {
+                friendId: foundFriend.id,
+                UserId: request.session.user
+              },
+              {
                 friendId: request.session.user,
                 UserId: foundFriend.id
               }
-            }).spread(function(result) {
-              if (result.$options.isNewRecord === true) {
-                console.log('You two are bros now!')
-                response.sendStatus(201)
-              } else {
-                console.log("bromance already created inside")
-                response.sendStatus(409)
-              }
-            })
+            ]
+          }
+        }).then(function(result){
+          if(result === null){
+            // create connections
+            db.Friend.create({
+              friendId: foundFriend.id,
+              UserId: request.session.user
+            });
+            db.Friend.create({
+              friendId: request.session.user,
+              UserId: foundFriend.id
+            });
+            console.log('You two are bros now!')
+            response.sendStatus(201)
           } else {
-            console.log("bromance already created")
+            // connections already exist
+            console.log("bromance already created inside")
             response.sendStatus(409)
           }
-        });
+        })
+
+
+
+
+
+
+
+
+
+        // db.Friend.findOrCreate({
+        //   where: {
+        //     friendId: foundFriend.id,
+        //     UserId: request.session.user
+        //   }
+        // }).spread(function(result) {
+        //   if (result.$options.isNewRecord === true) {
+        //     db.Friend.findOrCreate({
+        //       where: {
+        //         friendId: request.session.user,
+        //         UserId: foundFriend.id
+        //       }
+        //     }).spread(function(result) {
+        //       if (result.$options.isNewRecord === true) {
+        //         console.log('You two are bros now!')
+        //         response.sendStatus(201)
+        //       } else {
+        //         console.log("bromance already created inside")
+        //         response.sendStatus(409)
+        //       }
+        //     })
+        //   } else {
+        //     console.log("bromance already created")
+        //     response.sendStatus(409)
+        //   }
+        // });
+        //
+
+
+
+
+
+
+
+
+
+
       } else {
         console.log("That friend doesn't exist, or you are that friend")
         response.sendStatus(400)
