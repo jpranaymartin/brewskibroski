@@ -126,6 +126,10 @@ var Event = sequelize.define('Event', {
       max: 180.0
     },
     defaultValue: null
+  },
+  UserId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   }
 }, {
   timestamps: true,
@@ -138,17 +142,21 @@ var Friend = sequelize.define('Friend', {
     type: Sequelize.INTEGER,
     allowNull: false
   },
+  UserId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  }
 }, {
   timestamps: true
 });
 
 // Relationships Setup
 
-Friend.belongsTo(User);
-Event.belongsTo(User);
-
-User.hasMany(Friend);
-User.hasMany(Event);
+// Friend.belongsTo(User);
+// Event.belongsTo(User);
+//
+// User.hasMany(Friend);
+// User.hasMany(Event);
 
 // Create the tables in the database
 

@@ -66,6 +66,10 @@ input, select, textarea, .button {
   color: white;
 }
 
+.button, input {
+  border-radius: 0;
+}
+
 *:focus {
   outline: none;
 }
