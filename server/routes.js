@@ -96,12 +96,34 @@ router.get('/app', util.checkUser, function(request, response) {
 
 // Get current user's friends
 router.get('/friends', util.checkUser, function(request, response) {
+
+
+
+  // db.Friend.findAll({
+  //   where: {
+  //     UserId: request.session.user
+  //   }
+  // }).then(function(friendList){
+  //   var friendIds = friendList.map(function(friendConn){
+  //     return {
+  //       UserId: friendConn.friendId
+  //     }
+  //   });
+  // });
+
+
+
+
+
+
+
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
         replacements: [request.session.user],
         type: sequelize.QueryTypes.SELECT
       })
     .then(function(friends) {
+      console.log("LINE 126: ", friends);
       response.status(200).json({
         friends
       });
